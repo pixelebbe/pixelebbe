@@ -1,7 +1,9 @@
 from flask import Flask
 from flask_migrate import Migrate
+
 from database import db
 from config import SETTINGS
+from event_view import event_view
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = SETTINGS['SQL_URL']
@@ -13,3 +15,6 @@ app.db = db
 @app.route("/")
 def index():
     return "hello, world!"
+
+
+app.register_blueprint(event_view, url_prefix="/at/<event>")
