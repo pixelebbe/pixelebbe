@@ -1,5 +1,5 @@
 from flask import Blueprint, g
-from database import Event
+from database import db, Event
 
 event_view = Blueprint('event', __name__)
 
@@ -17,4 +17,4 @@ def check_and_apply_event(func):
 @event_view.route("/")
 @check_and_apply_event
 def index():
-    return f"welcome to event {event}"
+    return f"welcome to event {g.event.title}"
