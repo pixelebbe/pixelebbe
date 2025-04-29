@@ -1,1 +1,1 @@
-from pixelebbe import app
+from pixelebbe import app, db
