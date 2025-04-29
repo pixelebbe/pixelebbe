@@ -1,0 +1,3 @@
+SETTINGS = {
+    "SQL_URL": "sqlite:///pixelebbe.db"
+}
