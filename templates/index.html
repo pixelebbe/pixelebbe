@@ -1,0 +1,15 @@
+{% extends "layouts/frontend.html" %}
+{% block body %}
+    {% if events|length == 0 %}
+        <p>There is currently no event where pixeleb.be is active.</p>
+    {% else %}
+        <p>Choose an event:</p>
+        <ul>
+            {% for event in events %}
+                <li>
+                    <a href="{{ url_for('event.index', event=event.slug) }}">{{ event.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}

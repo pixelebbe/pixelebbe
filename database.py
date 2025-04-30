@@ -11,3 +11,7 @@ class Event(db.Model):
     @classmethod
     def from_slug(cls, slug):
         return cls.query.filter_by(slug=slug).one_or_404()
+    
+    @classmethod
+    def that_are_active(cls):
+        return cls.query.filter_by(active=True).all()
