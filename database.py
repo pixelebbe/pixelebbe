@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from PIL import ImageColor
 
 db = SQLAlchemy()
 
@@ -31,7 +32,7 @@ class Event(db.Model):
                 for dx in range(self.inner_pixel_dimensions):
                     for dy in range(self.inner_pixel_dimensions):
                         db.session.add(Pixel(
-                            pos_x=x, pos_y=y, dim_x=dx, dim_y=y,
+                            pos_x=x, pos_y=y, dim_x=dx, dim_y=dy,
                             color=color, event=self
                         ))
         db.session.commit()
@@ -46,6 +47,9 @@ class Color(db.Model):
     @classmethod
     def of(cls, code):
         return cls.query.filter_by(hue=code[0], lightness=code[1]).one()
+    
+    def getRGB(self):
+        return ImageColor.getcolor(self.hexcode, "RGB")
 
 
 class Pixel(db.Model):
