@@ -1,0 +1,10 @@
+{% extends "layouts/frontend.html" %}
+{% block head %}
+<meta http-equiv="refresh" content="5">
+{% endblock %}
+{% block body %}
+<div class="beamer">
+    <h1>pixeleb.be @ {{ g.event.title }}</h1>
+    <img src="{{ url_for('event.view_png', event=g.event.slug) }}" alt="">
+</div>
+{% endblock %}

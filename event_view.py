@@ -22,6 +22,12 @@ def check_and_apply_event(func):
 def index():
     return render_template('event/index.html')
 
+
+@event_view.route("/beamer")
+@check_and_apply_event
+def beamer():
+    return render_template('event/beamer.html')
+
 @event_view.route("/view.png")
 @check_and_apply_event
 def view_png():

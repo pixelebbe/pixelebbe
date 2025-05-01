@@ -1,14 +1,57 @@
 * { box-sizing: border-box; }
 
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    height: 100%;
+}
+
+body {
+    padding: 0.25em 0.5em;
+    min-height: 100vh;
+}
+
+h1, h2 {
+    margin: 0;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+
 img {
     max-width: 100%;
     height: auto;
+    margin: 1em 0;
 }
 
 img.ebbe {
     width: 100%;
     max-width: 600px;
     height: auto;
-    image-rendering: pixelated;
-    border: 1px solid #000000;
+    max-height: 450px;
+    image-rendering: crisp-edges;
+    object-fit: contain;
+}
+
+.beamer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    padding: 2rem;
+    margin: -0.25em -0.5em;
+    width: 100vw;
+    background-color: black;
+    color: white;
+    cursor: none;
+    font-family: sans-serif;
+}
+
+.beamer img {
+    width: 100vmin;
+    height: 75vmin;
+    object-fit: contain;
+    image-rendering: crisp-edges;
 }
