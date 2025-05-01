@@ -19,3 +19,9 @@ class Event(db.Model):
     @classmethod
     def that_are_active(cls):
         return cls.query.filter_by(active=True).all()
+    
+class Color(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+    hexcode = db.Column(db.String(7))
+    hue = db.Column(db.String(1))
+    lightness = db.Column(db.String(1))
