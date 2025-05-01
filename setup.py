@@ -47,6 +47,8 @@ with app.app_context():
         'Y2': '#aaaa22',
         'Y3': '#cccc44',
         'Y4': '#ffff66',
+
+        'Z9': '#nonono'
     }.items():
         hue = k[0]
         lightness = k[1]

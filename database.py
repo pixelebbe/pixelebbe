@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from PIL import ImageColor
+import random
 
 db = SQLAlchemy()
 
@@ -49,6 +50,8 @@ class Color(db.Model):
         return cls.query.filter_by(hue=code[0], lightness=code[1]).one()
     
     def getRGB(self):
+        if self.hexcode == '#nonono':
+            return (random.randint(0, 256), random.randint(0, 256), random.randint(0, 256))
         return ImageColor.getcolor(self.hexcode, "RGB")
 
 
