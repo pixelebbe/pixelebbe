@@ -1,4 +1,4 @@
-from flask import Blueprint, g, render_template, send_file
+from flask import Blueprint, g, render_template, request
 from database import db, Event
 import image_helper as imh
 
@@ -29,4 +29,5 @@ def beamer():
 @event_view.route("/view.png")
 @check_and_apply_event
 def view_png():
-    return imh.make_or_load_image(g.event)
+    # TODO: remove `nocache` before going to production
+    return imh.make_or_load_image(g.event, bypass_cache=('nocache' in request.values))

@@ -17,8 +17,8 @@ def make_image(event):
 
     im.save(f'temp/event-{event.slug}.png', 'PNG')
 
-def make_or_load_image(event):
-    if not os.path.exists(f'temp/event-{event.slug}.png'):
+def make_or_load_image(event, bypass_cache=False):
+    if not os.path.exists(f'temp/event-{event.slug}.png') or bypass_cache:
         make_image(event)
     
     return send_file(f'temp/event-{event.slug}.png', mimetype='image/png')
