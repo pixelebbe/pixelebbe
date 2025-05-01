@@ -14,4 +14,5 @@ def create_test_event():
               pixel_width=40, pixel_height=30, inner_pixel_dimensions=4)
     db.session.add(e)
     db.session.commit()
+    e.reset_pixels()
     return redirect(url_for('event.index', event=e.slug))
