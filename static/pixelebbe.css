@@ -1,0 +1,14 @@
+* { box-sizing: border-box; }
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+img.ebbe {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    image-rendering: pixelated;
+    border: 1px solid #000000;
+}

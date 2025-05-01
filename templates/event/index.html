@@ -4,5 +4,7 @@
 
     <h2>current display</h2>
 
+    <img src="{{ url_for('event.view_png', event=g.event.slug) }}" alt="" class="ebbe">
+
     <h2>how to request a pixel change</h2>
 {% endblock %}
