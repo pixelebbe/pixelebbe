@@ -8,6 +8,10 @@ class Event(db.Model):
     slug = db.Column(db.String(15))
     active = db.Column(db.Boolean())
 
+    pixel_width = db.Column(db.Integer())
+    pixel_height = db.Column(db.Integer())
+    inner_pixel_dimensions = db.Column(db.Integer())
+
     @classmethod
     def from_slug(cls, slug):
         return cls.query.filter_by(slug=slug).one_or_404()
