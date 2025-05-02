@@ -3,17 +3,15 @@ import os
 from flask import send_file
 
 def make_image(event):
-    dim = event.inner_pixel_dimensions
-    imw = (event.pixel_width) * dim
-    imh = (event.pixel_height) * dim
+    dim = event.big_pixel_factor
+    imw = (event.canvas_width) * dim
+    imh = (event.canvas_height) * dim
     im = Image.new("RGB", [imw, imh], 255)
     
     pixels = event.pixels.all()
 
     for pixel in pixels:
-        x = pixel.pos_x * dim + pixel.dim_x
-        y = pixel.pos_y * dim + pixel.dim_y
-        im.putpixel((x, y), pixel.color.getRGB())
+        im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
 
     im.save(f'temp/event-{event.slug}.png', 'PNG')
 

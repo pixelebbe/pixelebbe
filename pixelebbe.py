@@ -15,7 +15,7 @@ app.db = db
 
 @app.route("/")
 def index():
-    active_events = Event.that_are_active()
+    active_events = Event.get_active()
 
     if len(active_events) == 1 and not 'noredirect' in request.values:
         return redirect(url_for('event.index', event=active_events[0].slug))
