@@ -10,8 +10,11 @@ def index():
 
 @admin_view.route("/test-event")
 def create_test_event():
-    e = Event(slug='gpn23', title='Gulaschprogrammiernacht 2025', active=True,
-              pixel_width=40, pixel_height=30, inner_pixel_dimensions=4)
+    e = Event(slug='gpn23', 
+              title='Gulaschprogrammiernacht 2025', 
+              active=True,
+              canvas_width=40, canvas_height=30, 
+              big_pixel_factor=4)
     db.session.add(e)
     db.session.commit()
     e.reset_pixels()
