@@ -5,7 +5,7 @@ admin_view = Blueprint('admin', __name__)
 
 @admin_view.route("/")
 def index():
-    return "haha nope"
+    return "haha nope", 403
 
 
 @admin_view.route("/test-event")
