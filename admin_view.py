@@ -57,7 +57,6 @@ def api_keys():
     private_key = None
 
     if request.method == 'POST':
-        print("xoxo")
         _, private_key = current_user.generate_api_token(force_renew=True)
 
     return render_template("admin/api_keys.html", private_key=private_key)
