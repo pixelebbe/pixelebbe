@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, url_for, render_template, request
 from flask_security import auth_required, current_user
 from database import db, Event, Color, Pixel
-from image_helper import make_image
+from image_helper import make_image, import_image
 
 admin_view = Blueprint('admin', __name__)
 
@@ -36,6 +36,28 @@ def event_set_pixel(event):
         make_image(event)
 
     return render_template("admin/events/setpixel.html", event=event, all_colors=all_colors)
+
+
+@admin_view.route("/events/<event>/overwrite", methods=['GET', 'POST'])
+@auth_required()
+def event_overwrite(event):
+    event = Event.from_slug(event)
+    all_colors = Color.query.all()
+
+    if request.method == 'POST':
+        if request.form.get('color', 'clear') == 'clear':
+            if 'replacement' in request.files:
+                file = request.files['replacement']
+                if file.filename != '':
+                    file.save(f'temp/upload-{event.slug}')
+                    import_image(event, f'temp/upload-{event.slug}', canv_grid=('use-subpixel-grid' in request.form))
+        else:
+            color = int(request.form['color'])
+            color = Color.query.filter_by(id=color).one()
+            event.reset_pixels(color)
+            make_image(event)
+
+    return render_template("admin/events/overwrite.html", event=event, all_colors=all_colors)
 
 
 @admin_view.route("/test-event")

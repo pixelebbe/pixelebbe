@@ -7,7 +7,8 @@
             <li>
                 <strong>{{ event.title }}</strong> &middot;
                 <a href="{{ url_for('event.index', event=event.slug) }}">public view</a> &middot;
-                <a href="{{ url_for('admin.event_set_pixel', event=event.slug) }}">set pixel</a>
+                <a href="{{ url_for('admin.event_set_pixel', event=event.slug) }}">set pixel</a> &middot;
+                <a href="{{ url_for('admin.event_overwrite', event=event.slug) }}">overwrite</a>
             </li>
         {% endfor %}
     </ul>
