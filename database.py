@@ -92,3 +92,8 @@ class User(db.Model, fsqla.FsUserMixin):
         db.session.commit()
 
         return (self.api_public_token, private_token)
+    
+    def verify_private_api_key(self, private_key):
+        token = hashlib.shake_256(private_key.encode('utf-8')).hexdigest(256)
+
+        return token == self.api_private_token

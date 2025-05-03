@@ -8,6 +8,7 @@ from database import db, Event, User, Role
 from config import SETTINGS
 from event_view import event_view
 from admin_view import admin_view
+from api_view import api_view
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SETTINGS['SECRET_KEY']
@@ -43,3 +44,4 @@ def index():
 
 app.register_blueprint(event_view, url_prefix="/at/<event>")
 app.register_blueprint(admin_view, url_prefix="/admin")
+app.register_blueprint(api_view, url_prefix="/api")
