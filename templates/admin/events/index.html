@@ -1,0 +1,14 @@
+{% extends "layouts/backend.html" %}
+{% block body %}
+    <h1>events</h1>
+
+    <ul>
+        {% for event in all_events %}
+            <li>
+                <strong>{{ event.title }}</strong> &middot;
+                <a href="{{ url_for('event.index', event=event.slug) }}">public view</a> &middot;
+                <a href="{{ url_for('admin.event_set_pixel', event=event.slug) }}">set pixel</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
