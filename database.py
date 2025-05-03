@@ -2,6 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_security.models import fsqla_v3 as fsqla
 from PIL import ImageColor
 import random
+import hashlib
+import base64
 
 db = SQLAlchemy()
 fsqla.FsModels.set_db_info(db)
@@ -78,4 +80,15 @@ class Role(db.Model, fsqla.FsRoleMixin):
     pass
 
 class User(db.Model, fsqla.FsUserMixin):
-    pass
+    api_public_token = db.Column(db.String(24))
+    api_private_token = db.Column(db.String(512))
+
+    def generate_api_token(self, force_renew=False):
+        self.api_public_token = base64.b16encode(random.randbytes(8)).decode('utf-8')
+        
+        private_token = base64.b16encode(random.randbytes(16)).decode('utf-8')
+        self.api_private_token = hashlib.shake_256(private_token.encode('utf-8')).hexdigest(256)
+
+        db.session.commit()
+
+        return (self.api_public_token, private_token)

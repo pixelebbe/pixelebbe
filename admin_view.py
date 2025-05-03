@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, url_for, render_template, request
-from flask_security import auth_required
+from flask_security import auth_required, current_user
 from database import db, Event, Color, Pixel
 from image_helper import make_image
 
@@ -49,3 +49,15 @@ def create_test_event():
     db.session.commit()
     e.reset_pixels()
     return redirect(url_for('event.index', event=e.slug))
+
+
+@admin_view.route("/api-keys", methods=['GET', 'POST'])
+@auth_required()
+def api_keys():
+    private_key = None
+
+    if request.method == 'POST':
+        print("xoxo")
+        _, private_key = current_user.generate_api_token(force_renew=True)
+
+    return render_template("admin/api_keys.html", private_key=private_key)
