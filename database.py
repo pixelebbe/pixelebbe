@@ -1,8 +1,10 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_security.models import fsqla_v3 as fsqla
 from PIL import ImageColor
 import random
 
 db = SQLAlchemy()
+fsqla.FsModels.set_db_info(db)
 
 
 class Event(db.Model):
@@ -70,3 +72,10 @@ class Pixel(db.Model):
     pos_y = db.Column(db.Integer())
     canv_x = db.Column(db.Integer())
     canv_y = db.Column(db.Integer())
+
+
+class Role(db.Model, fsqla.FsRoleMixin):
+    pass
+
+class User(db.Model, fsqla.FsUserMixin):
+    pass
