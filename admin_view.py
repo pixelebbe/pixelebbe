@@ -1,11 +1,13 @@
-from flask import Blueprint, redirect, url_for
+from flask import Blueprint, redirect, url_for, render_template
+from flask_security import auth_required
 from database import db, Event
 
 admin_view = Blueprint('admin', __name__)
 
 @admin_view.route("/")
+@auth_required()
 def index():
-    return "haha nope", 403
+    return render_template("admin/index.html")
 
 
 @admin_view.route("/test-event")
