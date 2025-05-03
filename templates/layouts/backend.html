@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>pixeleb.be</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='pixelebbe.css') }}">
+    {% block head %}{% endblock head %}
+</head>
+<body>
+    <p>
+        <a href="{{ url_for('admin.index') }}">Index</a> &middot;
+        <a href="{{ url_for('admin.events') }}">Events</a> &middot;
+        <a href="{{ url_for('admin.api_keys') }}">API Key</a> &middot;
+        <a href="{{ url_for('security.logout') }}">Log out</a>
+    </p>
+    <hr>
+    {% block body %}{% endblock body %}
+</body>
+</html>

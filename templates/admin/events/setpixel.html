@@ -1,0 +1,29 @@
+{% extends "layouts/backend.html" %}
+{% block body %}
+    <h1>set pixel at {{ event.title }}</h1>
+
+    <form action="" method="post">
+        <p>
+            <label for="pos_x">x pos</label>
+            <input type="number" min="0" max="{{ event.canvas_width - 1 }}" id="pos_x" name="pos_x">
+        </p>
+
+        <p>
+            <label for="pos_y">y pos</label>
+            <input type="number" min="0" max="{{ event.canvas_height - 1 }}" id="pos_y" name="pos_y">
+        </p>
+
+
+        <p>color:</p>
+
+        <p>
+            {% for color in all_colors %}
+            {% if loop.index0 % 4 == 0 %}</p><p>{% endif %}
+                <input type="radio" name="color" id="color-{{ color.id }}" value="{{ color.id }}">
+                <label for="color-{{ color.id }}" style="background-color: {{ color.hexcode }};">{{ color.hue }}{{ color.lightness }}</label>
+            {% endfor %}
+        </p>
+
+        <button type="submit">submit</button>
+    </form>
+{% endblock %}

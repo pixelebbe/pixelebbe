@@ -2,4 +2,7 @@ flask
 flask-sqlalchemy
 flask-migrate
 
+flask-security-too[fsqla,common]
+setuptools
+
 Pillow
