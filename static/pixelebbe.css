@@ -56,3 +56,12 @@ img.ebbe {
     object-fit: contain;
     image-rendering: crisp-edges;
 }
+
+.admin-link {
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 0.25em;
+    opacity: 0;
+    cursor: default;
+}
