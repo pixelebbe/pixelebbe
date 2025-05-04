@@ -1,0 +1,17 @@
+{% extends "layouts/backend.html" %}
+{% block body %}
+    <h1>change roles of {{ user.username }}</h1>
+
+    {% for role in roles %}
+        <form action="" method="post">
+            <p>
+                <input type="hidden" name="role" value="{{ role.id }}">
+                <input id="role-{{ role.id }}" name="set" {{ 'checked' if role in user.roles }} type="checkbox">
+                <label for="role-{{ role.id }}">{{ role.name }}</label>
+                <button type="submit">update</button>
+            </p>
+        </form>
+    {% endfor %}
+
+    <a href="{{ url_for('admin.users') }}">back to user list</a>
+{% endblock %}

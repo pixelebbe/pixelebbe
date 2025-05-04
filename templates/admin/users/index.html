@@ -9,7 +9,7 @@
             <li>
                 <strong>{{ user.username }}</strong> &middot;
                 {{ user.role_text() }} &middot;
-                <a href="">change roles</a> &middot;
+                <a href="{{ url_for('admin.user_change_roles', user=user.id) }}">change roles</a> &middot;
                 <a href="{{ url_for('admin.user_set_password', user=user.id) }}">set/reset password</a> &middot;
                 <a href="{{ url_for('admin.change_user_status', user=user.id, to='api') }}">demote to api user</a> &middot;
                 <a href="{{ url_for('admin.change_user_status', user=user.id, to='inactive') }}">deactivate</a>

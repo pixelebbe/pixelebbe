@@ -180,3 +180,25 @@ def user_set_password(user):
         return redirect(url_for('admin.users'))
 
     return render_template("admin/users/set-password.html", user=user)
+
+
+@admin_view.route("/users/<user>/roles", methods=['GET', 'POST'])
+@roles_required('users')
+def user_change_roles(user):
+    user = User.query.filter_by(id=user).one_or_404()
+    roles = Role.query.all()
+
+    if request.method == 'POST':
+        role = request.form['role']
+        role = Role.query.filter_by(id=role).one()
+        
+        if 'set' in request.form:
+            if role not in user.roles:
+                user.roles.append(role)
+        else:
+            if role in user.roles:
+                user.roles.remove(role)
+
+        db.session.commit()
+
+    return render_template("admin/users/change-roles.html", user=user, roles=roles)
