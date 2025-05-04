@@ -10,6 +10,7 @@
                 <strong>{{ user.username }}</strong> &middot;
                 {{ user.role_text() }} &middot;
                 <a href="">change roles</a> &middot;
+                <a href="">set/reset password</a> &middot;
                 <a href="">demote to api user</a> &middot;
                 <a href="">deactivate</a>
             </li>
@@ -18,7 +19,7 @@
 
     <h2>api users</h2>
 
-    <p><a href="">create new api user</a></p>
+    <p><a href="{{ url_for('admin.new_api_user') }}">create new api user</a></p>
 
     <ul>
         {% for user in users.filter_by(active=False).all() if user.has_role('api') %}

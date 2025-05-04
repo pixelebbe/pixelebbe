@@ -10,7 +10,7 @@
 <body>
     <p>
         <a href="{{ url_for('admin.index') }}">index</a> &middot;
-        {% if current_user.has_role('events') %}
+        {% if current_user.has_role('edit') %}
             <a href="{{ url_for('admin.events') }}">events</a> &middot;
         {% endif %}
         {% if current_user.has_role('users') %}

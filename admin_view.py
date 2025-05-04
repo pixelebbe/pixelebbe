@@ -1,6 +1,6 @@
-from flask import Blueprint, redirect, url_for, render_template, request, abort
+from flask import Blueprint, redirect, url_for, render_template, request, abort, current_app
 from flask_security import auth_required, roles_required, current_user
-from database import db, Event, Color, User
+from database import db, Event, Color, User, Role
 from image_helper import make_image, import_image
 
 admin_view = Blueprint('admin', __name__)
@@ -12,14 +12,14 @@ def index():
 
 
 @admin_view.route("/events")
-@roles_required('events')
+@roles_required('edit')
 def events():
     all_events = Event.query.all()
     return render_template("admin/events/index.html", all_events=all_events)
 
 
 @admin_view.route("/events/new", methods=['GET', 'POST'])
-@roles_required('events.admin')
+@roles_required('events')
 def event_new():
     if request.method == 'POST':
         e = Event(slug=request.form['slug'],
@@ -36,7 +36,7 @@ def event_new():
 
 
 @admin_view.route("/events/<event>/toggle-active", methods=['GET', 'POST'])
-@roles_required('events.admin')
+@roles_required('events')
 def event_toggle_active(event):
     event = Event.from_slug(event)
 
@@ -50,12 +50,12 @@ def event_toggle_active(event):
 
 
 @admin_view.route("/events/<event>/setpixel", methods=['GET', 'POST'])
-@roles_required('events')
+@roles_required('edit')
 def event_set_pixel(event):
     event = Event.from_slug(event)
     all_colors = Color.query.all()
 
-    if not event.active and not current_user.has_role('events.admin'):
+    if not event.active and not current_user.has_role('events'):
         abort(401)
 
     if request.method == 'POST':
@@ -73,7 +73,7 @@ def event_set_pixel(event):
 
 
 @admin_view.route("/events/<event>/overwrite", methods=['GET', 'POST'])
-@roles_required('events.admin')
+@roles_required('events')
 def event_overwrite(event):
     event = Event.from_slug(event)
     all_colors = Color.query.all()
@@ -110,3 +110,19 @@ def api_keys():
 def users():
     user_query = User.query
     return render_template("admin/users/index.html", users=user_query)
+
+
+@admin_view.route("/users/new/api-user", methods=['GET', 'POST'])
+@roles_required('users', 'api')
+def new_api_user():
+    if request.method == 'POST':
+        u = current_app.security.datastore.create_user(
+            email=request.form['email'], username=request.form['username'], active=False)
+        u.roles.append(Role.query.filter_by(name='api').one())
+        db.session.commit()
+
+        pub_tok, priv_tok = u.generate_api_token()
+        return render_template("admin/users/new-api-user-tokens.html", pub_tok=pub_tok, priv_tok=priv_tok)
+
+    user_query = User.query
+    return render_template("admin/users/new-api-user.html", users=user_query)

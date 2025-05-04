@@ -1,0 +1,10 @@
+{% extends "layouts/backend.html" %}
+{% block body %}
+    <h1>api user successfully created</h1>
+
+    <p>public api key: {{ pub_tok }}</p>
+    <p>private api key: {{ priv_tok }}</p>
+    <p><strong>this private key will only be shown once, please write it down and keep it safe!</strong></p>
+
+    <p><a href="{{ url_for('admin.users') }}">back to users list</a></p>
+{% endblock %}

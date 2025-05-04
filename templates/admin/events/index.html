@@ -2,17 +2,17 @@
 {% block body %}
     <h1>events</h1>
 
-    {% if current_user.has_role('events.admin') %}
+    {% if current_user.has_role('events') %}
         <a href="{{ url_for('admin.event_new') }}">new event</a>
     {% endif %}
 
     <ul>
-        {% for event in all_events if event.active or current_user.has_role('events.admin') %}
+        {% for event in all_events if event.active or current_user.has_role('events') %}
             <li>
                 <strong>{{ event.title }}</strong> {{ '(offline)' if not event.active }} &middot;
                 <a href="{{ url_for('event.index', event=event.slug) }}">public view</a> &middot;
                 <a href="{{ url_for('admin.event_set_pixel', event=event.slug) }}">set pixel</a>
-                {% if current_user.has_role('events.admin') %} &middot;
+                {% if current_user.has_role('events') %} &middot;
                 <a href="{{ url_for('admin.event_overwrite', event=event.slug) }}">overwrite</a> &middot;
                 <a href="{{ url_for('admin.event_toggle_active', event=event.slug) }}">{{ 'deactivate' if event.active else 'activate' }}</a>
                 {% endif %}
