@@ -18,6 +18,23 @@ def events():
     return render_template("admin/events/index.html", all_events=all_events)
 
 
+@admin_view.route("/events/new", methods=['GET', 'POST'])
+@auth_required()
+def event_new():
+    if request.method == 'POST':
+        e = Event(slug=request.form['slug'],
+                title=request.form['title'],
+                active=False,
+                canvas_width=int(request.form['canv_width']), canvas_height=int(request.form['canv_height']), 
+                big_pixel_factor=int(request.form['pixel_factor']))
+        db.session.add(e)
+        db.session.commit()
+        e.reset_pixels()
+        return redirect(url_for('admin.events'))
+
+    return render_template("admin/events/new.html")
+
+
 @admin_view.route("/events/<event>/toggle-active", methods=['GET', 'POST'])
 @auth_required()
 def event_toggle_active(event):
@@ -72,19 +89,6 @@ def event_overwrite(event):
             make_image(event)
 
     return render_template("admin/events/overwrite.html", event=event, all_colors=all_colors)
-
-
-@admin_view.route("/test-event")
-def create_test_event():
-    e = Event(slug='gpn23', 
-              title='Gulaschprogrammiernacht 2025', 
-              active=True,
-              canvas_width=40, canvas_height=30, 
-              big_pixel_factor=4)
-    db.session.add(e)
-    db.session.commit()
-    e.reset_pixels()
-    return redirect(url_for('event.index', event=e.slug))
 
 
 @admin_view.route("/api-keys", methods=['GET', 'POST'])
