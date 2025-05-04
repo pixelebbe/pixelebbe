@@ -88,6 +88,9 @@ class User(db.Model, fsqla.FsUserMixin):
             return False
 
         return ro in self.roles
+    
+    def role_text(self):
+        return '; '.join([r.name for r in self.roles])
 
     def generate_api_token(self, force_renew=False):
         self.api_public_token = base64.b16encode(random.randbytes(8)).decode('utf-8')

@@ -13,6 +13,9 @@
         {% if current_user.has_role('events') %}
             <a href="{{ url_for('admin.events') }}">events</a> &middot;
         {% endif %}
+        {% if current_user.has_role('users') %}
+            <a href="{{ url_for('admin.users') }}">users</a> &middot;
+        {% endif %}
         {% if current_user.has_role('api') %}
             <a href="{{ url_for('admin.api_keys') }}">api key</a> &middot;
         {% endif %}

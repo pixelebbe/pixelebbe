@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, url_for, render_template, request, abort
 from flask_security import auth_required, roles_required, current_user
-from database import db, Event, Color, Pixel
+from database import db, Event, Color, User
 from image_helper import make_image, import_image
 
 admin_view = Blueprint('admin', __name__)
@@ -103,3 +103,10 @@ def api_keys():
         _, private_key = current_user.generate_api_token(force_renew=True)
 
     return render_template("admin/api_keys.html", private_key=private_key)
+
+
+@admin_view.route("/users")
+@roles_required('users')
+def users():
+    user_query = User.query
+    return render_template("admin/users/index.html", users=user_query)
