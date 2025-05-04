@@ -76,6 +76,22 @@ class Pixel(db.Model):
     canv_y = db.Column(db.Integer())
 
 
+class Change(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+
+    event_id = db.Column(db.Integer(), db.ForeignKey('event.id'))
+    event = db.relationship('Event', backref=db.backref('pixels', lazy='dynamic'))
+
+    color_id = db.Column(db.Integer(), db.ForeignKey('color.id'))
+    color = db.relationship('Color')
+
+    pixel_id = db.Column(db.Integer(), db.ForeignKey('pixel.id'))
+    pixel = db.relationship('Pixel', backref=db.backref('changes', lazy='dynamic'))
+
+    happens_at_same_time_as_previous_change = db.Column(db.Boolean())
+    change_time = db.Column(db.DateTime())  
+
+
 class Role(db.Model, fsqla.FsRoleMixin):
     pass
 
