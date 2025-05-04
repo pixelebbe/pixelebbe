@@ -73,7 +73,8 @@ def event_set_pixel(event):
         for pix in query.all():
             db.session.add(Change(event=event, color=color, pixel=pix,
                                 happens_at_same_time_as_previous_change=not first,
-                                change_time = datetime.now()))
+                                change_time = datetime.now(),
+                                user=current_user, source=request.form.get('source', 'manual')))
             first = False
 
         db.session.commit()
@@ -101,7 +102,8 @@ def event_overwrite(event):
                     for pix in event.pixels.all():
                         db.session.add(Change(event=event, color=pix.color, pixel=pix,
                                         happens_at_same_time_as_previous_change=not first,
-                                        change_time = datetime.now()))
+                                        change_time = datetime.now(),
+                                        user=current_user, source='overwrite.image'))
                         first = False
 
                     db.session.commit()
@@ -115,7 +117,8 @@ def event_overwrite(event):
             for pix in event.pixels.all():
                 db.session.add(Change(event=event, color=color, pixel=pix,
                                 happens_at_same_time_as_previous_change=not first,
-                                change_time = datetime.now()))
+                                change_time = datetime.now(),
+                                user=current_user, source='overwrite.color'))
                 first = False
 
             db.session.commit()

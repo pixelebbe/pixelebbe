@@ -88,8 +88,12 @@ class Change(db.Model):
     pixel_id = db.Column(db.Integer(), db.ForeignKey('pixel.id'))
     pixel = db.relationship('Pixel', backref=db.backref('changes', lazy='dynamic'))
 
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    user = db.relationship('User', backref=db.backref('changes', lazy='dynamic'))
+    source = db.Column(db.String(64))
+
     happens_at_same_time_as_previous_change = db.Column(db.Boolean())
-    change_time = db.Column(db.DateTime())  
+    change_time = db.Column(db.DateTime())
 
 
 class Role(db.Model, fsqla.FsRoleMixin):
