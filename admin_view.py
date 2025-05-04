@@ -18,6 +18,20 @@ def events():
     return render_template("admin/events/index.html", all_events=all_events)
 
 
+@admin_view.route("/events/<event>/toggle-active", methods=['GET', 'POST'])
+@auth_required()
+def event_toggle_active(event):
+    event = Event.from_slug(event)
+
+    if request.method == 'POST':
+        event.active = not event.active
+        db.session.commit()
+
+        return redirect(url_for('admin.events'))
+    
+    return render_template('admin/events/toggle-active.html', event=event)
+
+
 @admin_view.route("/events/<event>/setpixel", methods=['GET', 'POST'])
 @auth_required()
 def event_set_pixel(event):

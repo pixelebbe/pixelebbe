@@ -38,6 +38,9 @@ def setpixel():
     y = int(request.values.get('y'))
     canvas_grid = request.values.get('grid', 'pos') == 'canv'
 
+    if not event.active:
+        abort(401)
+
     if canvas_grid:
         event.pixels.filter_by(canv_x=x, canv_y=y).update({"color_id": color.id})
     else:

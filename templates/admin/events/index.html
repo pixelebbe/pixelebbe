@@ -5,10 +5,11 @@
     <ul>
         {% for event in all_events %}
             <li>
-                <strong>{{ event.title }}</strong> &middot;
+                <strong>{{ event.title }}</strong> {{ '(offline)' if not event.active }} &middot;
                 <a href="{{ url_for('event.index', event=event.slug) }}">public view</a> &middot;
                 <a href="{{ url_for('admin.event_set_pixel', event=event.slug) }}">set pixel</a> &middot;
-                <a href="{{ url_for('admin.event_overwrite', event=event.slug) }}">overwrite</a>
+                <a href="{{ url_for('admin.event_overwrite', event=event.slug) }}">overwrite</a> &middot;
+                <a href="{{ url_for('admin.event_toggle_active', event=event.slug) }}">{{ 'deactivate' if event.active else 'activate' }}</a>
             </li>
         {% endfor %}
     </ul>
