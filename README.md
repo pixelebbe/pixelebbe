@@ -37,7 +37,11 @@ Still in development:
 - Flask-Migrate
 - Pillow (Python Imaging Library)
 
-## Installation
+## Prod Installation
+
+Please refer to the file [install.md](./install.md) for production install instructions.
+
+## Dev Installation
 
 1. Clone the repository:
 ```bash
@@ -59,6 +63,7 @@ pip install -r requirements.txt
 4. Copy the example configuration file and modify it:
 ```bash
 cp config.py.example config.py
+nano config.py
 ```
 
 5. Initialize the database:
@@ -66,13 +71,7 @@ cp config.py.example config.py
 python setup.py
 ```
 
-## Configuration
-
-Modify your config.py file to suit your needs.
-
-## Running the Application
-
-To start the development server:
+6. Start the development server:
 
 ```bash
 FLASK_DEBUG=1 flask run
@@ -80,7 +79,7 @@ FLASK_DEBUG=1 flask run
 
 The application will be available at `http://localhost:5000`
 
-## Database Migrations
+### Database Migrations
 
 When you make changes to the database models in `database.py`, you need to create and apply migrations:
 
