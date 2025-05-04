@@ -141,7 +141,7 @@ def new_user():
     return render_template("admin/users/new-user.html")
 
 
-@admin_view.route("/users/<user>/change_status/<to>", methods=['GET', 'POST'])
+@admin_view.route("/users/<user>/change-status/<to>", methods=['GET', 'POST'])
 @roles_required('users')
 def change_user_status(user, to):
     user = User.query.filter_by(id=user).one_or_404()
@@ -167,3 +167,16 @@ def change_user_status(user, to):
         return redirect(url_for('admin.users'))
 
     return render_template("admin/users/status-change.html", user=user, to=to)
+
+
+@admin_view.route("/users/<user>/set-password", methods=['GET', 'POST'])
+@roles_required('users')
+def user_set_password(user):
+    user = User.query.filter_by(id=user).one_or_404()
+
+    if request.method == 'POST':
+        user.password = hash_password(request.form['password'])
+        db.session.commit()
+        return redirect(url_for('admin.users'))
+
+    return render_template("admin/users/set-password.html", user=user)
