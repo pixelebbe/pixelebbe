@@ -29,7 +29,7 @@ def status():
     return jsonify({'status': 'ok'})
 
 
-@api_view.route("/setpixel")
+@api_view.route("/setpixel", methods=['GET', 'POST'])
 @api_authenticate
 def setpixel():
     event = Event.from_slug(request.values.get('event'))
