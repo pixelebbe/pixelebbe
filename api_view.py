@@ -43,6 +43,8 @@ def setpixel():
     else:
         event.pixels.filter_by(pos_x=x, pos_y=y).update({"color_id": color.id})
 
+    db.session.commit()
+
     make_image(event)
     
     return jsonify({'status': 'success'})
