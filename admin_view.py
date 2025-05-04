@@ -139,3 +139,31 @@ def new_user():
         return redirect(url_for('admin.users'))
 
     return render_template("admin/users/new-user.html")
+
+
+@admin_view.route("/users/<user>/change_status/<to>", methods=['GET', 'POST'])
+@roles_required('users')
+def change_user_status(user, to):
+    user = User.query.filter_by(id=user).one_or_404()
+
+    if user == current_user:
+        return redirect(url_for('admin.users'))
+
+    if request.method == 'POST':
+        if to == 'inactive':
+            if user.has_role('api'):
+                user.roles.remove(Role.query.filter_by(name='api').one())
+            user.active = False
+            db.session.commit()
+        elif to == 'active':
+            user.active = True
+            db.session.commit()
+        elif to == 'api':
+            if not user.has_role('api'):
+                user.roles.append(Role.query.filter_by(name='api').one())
+            user.active = False
+            db.session.commit()
+
+        return redirect(url_for('admin.users'))
+
+    return render_template("admin/users/status-change.html", user=user, to=to)

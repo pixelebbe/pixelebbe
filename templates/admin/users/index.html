@@ -11,8 +11,8 @@
                 {{ user.role_text() }} &middot;
                 <a href="">change roles</a> &middot;
                 <a href="">set/reset password</a> &middot;
-                <a href="">demote to api user</a> &middot;
-                <a href="">deactivate</a>
+                <a href="{{ url_for('admin.change_user_status', user=user.id, to='api') }}">demote to api user</a> &middot;
+                <a href="{{ url_for('admin.change_user_status', user=user.id, to='inactive') }}">deactivate</a>
             </li>
         {% endfor %}
     </ul>
@@ -25,8 +25,8 @@
         {% for user in users.filter_by(active=False).all() if user.has_role('api') %}
             <li>
                 <strong>{{ user.username }}</strong> &middot;
-                <a href="">promote to active user</a> &middot;
-                <a href="">deactivate</a>
+                <a href="{{ url_for('admin.change_user_status', user=user.id, to='active') }}">promote to active user</a> &middot;
+                <a href="{{ url_for('admin.change_user_status', user=user.id, to='inactive') }}">deactivate</a>
             </li>
         {% endfor %}
     </ul>
@@ -39,8 +39,8 @@
         {% for user in users.filter_by(active=False).all() if not user.has_role('api') %}
             <li>
                 <strong>{{ user.username }}</strong> &middot;
-                <a href="">activate as active user</a> &middot;
-                <a href="">activate as api user</a> &middot;
+                <a href="{{ url_for('admin.change_user_status', user=user.id, to='active') }}">activate as active user</a> &middot;
+                <a href="{{ url_for('admin.change_user_status', user=user.id, to='api') }}">activate as api user</a>
             </li>
         {% endfor %}
     </ul>
