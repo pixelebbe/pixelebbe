@@ -10,8 +10,12 @@
 <body>
     <p>
         <a href="{{ url_for('admin.index') }}">index</a> &middot;
-        <a href="{{ url_for('admin.events') }}">events</a> &middot;
-        <a href="{{ url_for('admin.api_keys') }}">api key</a> &middot;
+        {% if current_user.has_role('events') %}
+            <a href="{{ url_for('admin.events') }}">events</a> &middot;
+        {% endif %}
+        {% if current_user.has_role('api') %}
+            <a href="{{ url_for('admin.api_keys') }}">api key</a> &middot;
+        {% endif %}
         <a href="{{ url_for('index') }}" target="_blank">back to frontend</a> &middot;
         <a href="{{ url_for('security.logout') }}">log out</a>
     </p>

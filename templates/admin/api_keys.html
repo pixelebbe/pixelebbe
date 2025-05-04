@@ -2,30 +2,24 @@
 {% block body %}
     <h1>api key</h1>
 
-    {% if current_user.has_role('api') %}
+    {% if current_user.api_public_token %}
+        <p>public api key: {{ current_user.api_public_token }}</p>
 
-        {% if current_user.api_public_token %}
-            <p>public api key: {{ current_user.api_public_token }}</p>
-
-            {% if private_key %}
-                <p>private api key: {{ private_key }}</p>
-                <p><strong>this private key will only be shown once, please write it down and keep it safe!</strong></p>
-            {% else %}
-                <p>private api key: [hidden]</p>
-                <p>you can regenerate a new api key if you lost it</p>
-                <form action="" method="POST">
-                    <button type="submit">generate api key pair</button>
-                </form>
-            {% endif %}
-
+        {% if private_key %}
+            <p>private api key: {{ private_key }}</p>
+            <p><strong>this private key will only be shown once, please write it down and keep it safe!</strong></p>
         {% else %}
-            <p>you do not yet have an api key.</p>
+            <p>private api key: [hidden]</p>
+            <p>you can regenerate a new api key if you lost it</p>
             <form action="" method="POST">
                 <button type="submit">generate api key pair</button>
             </form>
         {% endif %}
 
     {% else %}
-        <p>You mayeth not use the api</p>
+        <p>you do not yet have an api key.</p>
+        <form action="" method="POST">
+            <button type="submit">generate api key pair</button>
+        </form>
     {% endif %}
 {% endblock %}

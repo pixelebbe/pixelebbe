@@ -1,5 +1,5 @@
-from flask import Blueprint, redirect, url_for, render_template, request
-from flask_security import auth_required, current_user
+from flask import Blueprint, redirect, url_for, render_template, request, abort
+from flask_security import auth_required, roles_required, current_user
 from database import db, Event, Color, Pixel
 from image_helper import make_image, import_image
 
@@ -12,14 +12,14 @@ def index():
 
 
 @admin_view.route("/events")
-@auth_required()
+@roles_required('events')
 def events():
     all_events = Event.query.all()
     return render_template("admin/events/index.html", all_events=all_events)
 
 
 @admin_view.route("/events/new", methods=['GET', 'POST'])
-@auth_required()
+@roles_required('events.admin')
 def event_new():
     if request.method == 'POST':
         e = Event(slug=request.form['slug'],
@@ -36,7 +36,7 @@ def event_new():
 
 
 @admin_view.route("/events/<event>/toggle-active", methods=['GET', 'POST'])
-@auth_required()
+@roles_required('events.admin')
 def event_toggle_active(event):
     event = Event.from_slug(event)
 
@@ -50,10 +50,13 @@ def event_toggle_active(event):
 
 
 @admin_view.route("/events/<event>/setpixel", methods=['GET', 'POST'])
-@auth_required()
+@roles_required('events')
 def event_set_pixel(event):
     event = Event.from_slug(event)
     all_colors = Color.query.all()
+
+    if not event.active and not current_user.has_role('events.admin'):
+        abort(401)
 
     if request.method == 'POST':
         pos_x = int(request.form['pos_x'])
@@ -70,7 +73,7 @@ def event_set_pixel(event):
 
 
 @admin_view.route("/events/<event>/overwrite", methods=['GET', 'POST'])
-@auth_required()
+@roles_required('events.admin')
 def event_overwrite(event):
     event = Event.from_slug(event)
     all_colors = Color.query.all()
@@ -92,7 +95,7 @@ def event_overwrite(event):
 
 
 @admin_view.route("/api-keys", methods=['GET', 'POST'])
-@auth_required()
+@roles_required('api')
 def api_keys():
     private_key = None
 
