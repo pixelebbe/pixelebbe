@@ -1,0 +1,27 @@
+{% extends "layouts/backend.html" %}
+{% block body %}
+    <h1>overwrite canvas at {{ event.title }}</h1>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        <p>overwrite everything with this color:</p>
+
+        <p>
+            {% for color in all_colors %}
+            {% if loop.index0 % 4 == 0 %}</p><p>{% endif %}
+                <input type="radio" name="color" id="color-{{ color.id }}" value="{{ color.id }}">
+                <label for="color-{{ color.id }}" style="background-color: {{ color.hexcode }};">{{ color.hue }}{{ color.lightness }}</label>
+            {% endfor %}
+        </p>
+        <p><input type="radio" name="color" id="color-clear" value="clear" checked>
+            <label for="color-clear">clear</label></p>
+
+        <p>or</p>
+
+        <p>overwrite with the following file: <input type="file" name="replacement"></p>
+
+        <p><input type="checkbox" name="use-subpixel-grid" id="use-subpixel-grid" checked>
+            <label for="use-subpixel-grid">use subpixel grid</label></p>
+
+        <button type="submit">submit</button>
+    </form>
+{% endblock %}
