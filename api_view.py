@@ -1,6 +1,7 @@
 from flask import Blueprint, request, abort, g, jsonify
-from database import db, User, Event, Color
+from database import db, User, Event, Color, Change
 from image_helper import make_image
+from datetime import datetime
 
 api_view = Blueprint('api', __name__)
 
@@ -45,9 +46,18 @@ def setpixel():
         abort(401)
 
     if canvas_grid:
-        event.pixels.filter_by(canv_x=x, canv_y=y).update({"color_id": color.id})
+        query = event.pixels.filter_by(canv_x=x, canv_y=y)
     else:
-        event.pixels.filter_by(pos_x=x, pos_y=y).update({"color_id": color.id})
+        query = event.pixels.filter_by(pos_x=x, pos_y=y)
+
+    query.update({"color_id": color.id})
+
+    first = True
+    for pix in query.all():
+        db.session.add(Change(event=event, color=color, pixel=pix,
+                              happens_at_same_time_as_previous_change=not first,
+                              change_time = datetime.now()))
+        first = False
 
     db.session.commit()
 

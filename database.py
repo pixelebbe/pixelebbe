@@ -80,7 +80,7 @@ class Change(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
 
     event_id = db.Column(db.Integer(), db.ForeignKey('event.id'))
-    event = db.relationship('Event', backref=db.backref('pixels', lazy='dynamic'))
+    event = db.relationship('Event', backref=db.backref('changes', lazy='dynamic'))
 
     color_id = db.Column(db.Integer(), db.ForeignKey('color.id'))
     color = db.relationship('Color')
@@ -120,5 +120,5 @@ class User(db.Model, fsqla.FsUserMixin):
     
     def verify_private_api_key(self, private_key):
         token = hashlib.shake_256(private_key.encode('utf-8')).hexdigest(256)
-
+        
         return token == self.api_private_token

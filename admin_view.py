@@ -1,7 +1,8 @@
 from flask import Blueprint, redirect, url_for, render_template, request, abort, current_app
 from flask_security import auth_required, roles_required, current_user, hash_password
-from database import db, Event, Color, User, Role
+from database import db, Event, Color, User, Role, Change
 from image_helper import make_image, import_image
+from datetime import datetime
 
 admin_view = Blueprint('admin', __name__)
 
@@ -61,10 +62,20 @@ def event_set_pixel(event):
     if request.method == 'POST':
         pos_x = int(request.form['pos_x'])
         pos_y = int(request.form['pos_y'])
-        color = int(request.form['color'])
 
+        color = int(request.form['color'])
         color = Color.query.filter_by(id=color).one()
-        event.pixels.filter_by(pos_x=pos_x, pos_y=pos_y).update({"color_id": color.id})
+
+        query = event.pixels.filter_by(pos_x=pos_x, pos_y=pos_y)
+        query.update({"color_id": color.id})
+
+        first = True
+        for pix in query.all():
+            db.session.add(Change(event=event, color=color, pixel=pix,
+                                happens_at_same_time_as_previous_change=not first,
+                                change_time = datetime.now()))
+            first = False
+
         db.session.commit()
 
         make_image(event)
@@ -85,10 +96,30 @@ def event_overwrite(event):
                 if file.filename != '':
                     file.save(f'temp/upload-{event.slug}')
                     import_image(event, f'temp/upload-{event.slug}', canv_grid=('use-subpixel-grid' in request.form))
+
+                    first = True
+                    for pix in event.pixels.all():
+                        db.session.add(Change(event=event, color=pix.color, pixel=pix,
+                                        happens_at_same_time_as_previous_change=not first,
+                                        change_time = datetime.now()))
+                        first = False
+
+                    db.session.commit()
         else:
             color = int(request.form['color'])
             color = Color.query.filter_by(id=color).one()
+
             event.reset_pixels(color)
+
+            first = True
+            for pix in event.pixels.all():
+                db.session.add(Change(event=event, color=color, pixel=pix,
+                                happens_at_same_time_as_previous_change=not first,
+                                change_time = datetime.now()))
+                first = False
+
+            db.session.commit()
+
             make_image(event)
 
     return render_template("admin/events/overwrite.html", event=event, all_colors=all_colors)
