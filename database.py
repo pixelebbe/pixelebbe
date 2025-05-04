@@ -83,6 +83,12 @@ class User(db.Model, fsqla.FsUserMixin):
     api_public_token = db.Column(db.String(24))
     api_private_token = db.Column(db.String(512))
 
+    def has_role(self, role_name):
+        if not (ro := Role.query.filter_by(name=role_name).one_or_none()):
+            return False
+
+        return ro in self.roles
+
     def generate_api_token(self, force_renew=False):
         self.api_public_token = base64.b16encode(random.randbytes(8)).decode('utf-8')
         

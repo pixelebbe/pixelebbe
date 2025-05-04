@@ -16,6 +16,9 @@ def api_authenticate(func):
         if not pubapi_user or not pubapi_user.verify_private_api_key(private_api_key):
             abort(400)
 
+        if not pubapi_user.has_role('api'):
+            abort(401)
+
         g.api_user = pubapi_user
 
         return func(*args, **kwargs)
