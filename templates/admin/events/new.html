@@ -1,0 +1,33 @@
+{% extends "layouts/backend.html" %}
+{% block body %}
+    <h1>new event</h1>
+
+    <form action="" method="post">
+        <p>
+            <label for="slug">slug (please only alphanumerical and underscore, thank you)</label>
+            <input id="slug" name="slug">
+        </p>
+
+        <p>
+            <label for="title">full-length event title</label>
+            <input id="title" name="title">
+        </p>
+
+        <p>
+            <label for="canv_width">canvas width (in BIG PIXELS)</label>
+            <input type="number" min="1" max="80" value="40" id="canv_width" name="canv_width">
+        </p>
+
+        <p>
+            <label for="canv_height">canvas height (in BIG PIXELS)</label>
+            <input type="number" min="1" max="80" value="30" id="canv_height" name="canv_height">
+        </p>
+
+        <p>
+            <label for="pixel_factor">BIG PIXEL size</label>
+            <input type="number" min="1" max="6" value="4" id="pixel_factor" name="pixel_factor">
+        </p>
+
+        <button type="submit">submit</button>
+    </form>
+{% endblock %}

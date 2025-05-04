@@ -2,7 +2,7 @@
 {% block body %}
     <h1>api key</h1>
 
-    {% if current_user.api_public_token != '' %}
+    {% if current_user.api_public_token %}
         <p>public api key: {{ current_user.api_public_token }}</p>
 
         {% if private_key %}
