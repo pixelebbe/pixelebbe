@@ -1,5 +1,5 @@
 from app import app, db
-from database import Color
+from database import Color, Role
 from flask_migrate import stamp
 
 with app.app_context():
@@ -54,6 +54,10 @@ with app.app_context():
         lightness = k[1]
         db.session.add(Color(hexcode=v, hue=hue, lightness=lightness))
     
+
+    for role in ['api', 'users', 'events', 'events.admin']:
+        db.session.add(Role(name=role))
+
     db.session.commit()
 
 print("OK.")
