@@ -1,6 +1,7 @@
 {% extends "layouts/frontend.html" %}
 {% block head %}
-<meta http-equiv="refresh" content="5">
+<noscript><meta http-equiv="refresh" content="5"></noscript>
+<script src="{{ url_for('static', filename='graceful-refresh.js') }}" defer></script>
 {% endblock %}
 {% block body %}
 <div class="beamer">
