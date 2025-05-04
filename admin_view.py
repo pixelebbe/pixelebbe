@@ -1,5 +1,5 @@
 from flask import Blueprint, redirect, url_for, render_template, request, abort, current_app
-from flask_security import auth_required, roles_required, current_user
+from flask_security import auth_required, roles_required, current_user, hash_password
 from database import db, Event, Color, User, Role
 from image_helper import make_image, import_image
 
@@ -113,7 +113,7 @@ def users():
 
 
 @admin_view.route("/users/new/api-user", methods=['GET', 'POST'])
-@roles_required('users', 'api')
+@roles_required('users')
 def new_api_user():
     if request.method == 'POST':
         u = current_app.security.datastore.create_user(
@@ -124,5 +124,18 @@ def new_api_user():
         pub_tok, priv_tok = u.generate_api_token()
         return render_template("admin/users/new-api-user-tokens.html", pub_tok=pub_tok, priv_tok=priv_tok)
 
-    user_query = User.query
-    return render_template("admin/users/new-api-user.html", users=user_query)
+    return render_template("admin/users/new-api-user.html")
+
+
+@admin_view.route("/users/new/user", methods=['GET', 'POST'])
+@roles_required('users')
+def new_user():
+    if request.method == 'POST':
+        u = current_app.security.datastore.create_user(
+            email=request.form['email'], username=request.form['username'],
+            password=hash_password(request.form['password']), active=False)
+
+        pub_tok, priv_tok = u.generate_api_token()
+        return redirect(url_for('admin.users'))
+
+    return render_template("admin/users/new-user.html")
