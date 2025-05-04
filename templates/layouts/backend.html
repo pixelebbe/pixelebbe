@@ -9,11 +9,11 @@
 </head>
 <body>
     <p>
-        <a href="{{ url_for('admin.index') }}">Index</a> &middot;
-        <a href="{{ url_for('admin.events') }}">Events</a> &middot;
-        <a href="{{ url_for('admin.api_keys') }}">API Key</a> &middot;
-        <a href="{{ url_for('index') }}" target="_blank">Back to frontend</a> &middot;
-        <a href="{{ url_for('security.logout') }}">Log out</a>
+        <a href="{{ url_for('admin.index') }}">index</a> &middot;
+        <a href="{{ url_for('admin.events') }}">events</a> &middot;
+        <a href="{{ url_for('admin.api_keys') }}">api key</a> &middot;
+        <a href="{{ url_for('index') }}" target="_blank">back to frontend</a> &middot;
+        <a href="{{ url_for('security.logout') }}">log out</a>
     </p>
     <hr>
     {% block body %}{% endblock body %}
