@@ -8,9 +8,10 @@ from database import Event
 
 import sys, os
 
+from config import SETTINGS
 
 #frame * x * y * rgb
-FRAME_SPLIT = 500
+FRAME_SPLIT = 50
 
 def create_first_frame(event):
     dim = event.big_pixel_factor
@@ -39,11 +40,14 @@ def merge_splits(fn, split_counter, fps):
         gifs.append(im)
 
     full_im = gifs[0]
-    full_im.save(fn, save_all=True, optimize=True, append_images=gifs[1:])
+    full_im.save(fn, save_all=True, optimize=True, append_images=gifs[1:], duration=3)
 
     for fileno in range(split_counter):
         subfn = f"{fn}.{fileno}.gif"
         os.unlink(subfn)
+
+    if SETTINGS['REENCODE_GIF_TO_MP4']:
+        os.system(f"ffmpeg -i {fn} -filter_complex \"[0:v]mpdecimate,setpts=N/({fps}*TB),fps={fps},scale=iw*4:ih*4:flags=neighbor\" -an -c:v libx264 -r {fps} -pix_fmt yuv420p {fn}.mp4")
 
 def render(fn, event, fps=10):
     first_frame = create_first_frame(event)
@@ -63,7 +67,7 @@ def render(fn, event, fps=10):
             next_frame = render_frame(np.copy(previous_frame), change)
             frames = np.append(frames, np.array([next_frame]), axis=0)
             frame_counter += 1
-            print(frames.shape)
+            #print(frames.shape)
 
             if frame_counter == FRAME_SPLIT:
                 assemble_movie(f"{fn}.{split_counter}.gif", frames, fps)
