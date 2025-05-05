@@ -1,5 +1,6 @@
 SETTINGS = {
     "SQL_URL": "sqlite:///pixelebbe.db",
     "SECRET_KEY": "this must stay very secret",
-    "SECURITY_PASSWORD_SALT": "om nom very salty"
+    "SECURITY_PASSWORD_SALT": "om nom very salty",
+    "REENCODE_GIF_TO_MP4": False
 }
