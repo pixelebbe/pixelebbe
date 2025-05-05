@@ -2,14 +2,15 @@ from app import app
 
 from moviepy import ImageSequenceClip
 import numpy as np
+from PIL import Image
 
 from database import Event
 
-import sys
-import copy
+import sys, os
+
 
 #frame * x * y * rgb
-
+FRAME_SPLIT = 500
 
 def create_first_frame(event):
     dim = event.big_pixel_factor
@@ -29,10 +30,28 @@ def assemble_movie(fn, frames, fps=10):
     clip = ImageSequenceClip(list(frames), fps=fps)
     clip.write_gif(fn, fps=fps)
 
+def merge_splits(fn, split_counter, fps):
+    gifs = []
+
+    for fileno in range(split_counter):
+        subfn = f"{fn}.{fileno}.gif"
+        im = Image.open(subfn)
+        gifs.append(im)
+
+    full_im = gifs[0]
+    full_im.save(fn, save_all=True, optimize=True, append_images=gifs[1:])
+
+    for fileno in range(split_counter):
+        subfn = f"{fn}.{fileno}.gif"
+        os.unlink(subfn)
+
 def render(fn, event, fps=10):
     first_frame = create_first_frame(event)
 
     frames = np.array([first_frame])
+
+    frame_counter = 0
+    split_counter = 0
 
     for change in event.changes:
         previous_frame = frames[-1]
@@ -43,10 +62,18 @@ def render(fn, event, fps=10):
         else:
             next_frame = render_frame(np.copy(previous_frame), change)
             frames = np.append(frames, np.array([next_frame]), axis=0)
-    
-    print(frames.shape)
+            frame_counter += 1
+            print(frames.shape)
 
-    return assemble_movie(fn, frames, fps)
+            if frame_counter == FRAME_SPLIT:
+                assemble_movie(f"{fn}.{split_counter}.gif", frames, fps)
+                split_counter += 1
+                frames = np.array([next_frame])
+                frame_counter = 0
+
+    assemble_movie(f"{fn}.{split_counter}.gif", frames, fps)
+            
+    merge_splits(fn, split_counter + 1, fps)
 
 
 if __name__ == '__main__':
