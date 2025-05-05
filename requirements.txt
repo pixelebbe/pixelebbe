@@ -6,3 +6,5 @@ flask-security-too[fsqla,common]
 setuptools
 
 Pillow
+moviepy
+numpy

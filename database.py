@@ -76,6 +76,26 @@ class Pixel(db.Model):
     canv_y = db.Column(db.Integer())
 
 
+class Change(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+
+    event_id = db.Column(db.Integer(), db.ForeignKey('event.id'))
+    event = db.relationship('Event', backref=db.backref('changes', lazy='dynamic'))
+
+    color_id = db.Column(db.Integer(), db.ForeignKey('color.id'))
+    color = db.relationship('Color')
+
+    pixel_id = db.Column(db.Integer(), db.ForeignKey('pixel.id'))
+    pixel = db.relationship('Pixel', backref=db.backref('changes', lazy='dynamic'))
+
+    user_id = db.Column(db.Integer(), db.ForeignKey('user.id'))
+    user = db.relationship('User', backref=db.backref('changes', lazy='dynamic'))
+    source = db.Column(db.String(64))
+
+    happens_at_same_time_as_previous_change = db.Column(db.Boolean())
+    change_time = db.Column(db.DateTime())
+
+
 class Role(db.Model, fsqla.FsRoleMixin):
     pass
 
@@ -104,5 +124,5 @@ class User(db.Model, fsqla.FsUserMixin):
     
     def verify_private_api_key(self, private_key):
         token = hashlib.shake_256(private_key.encode('utf-8')).hexdigest(256)
-
+        
         return token == self.api_private_token
