@@ -1,11 +1,62 @@
 from flask import send_file
 
 from PIL import Image
-import os, math
+import os, math, time, io
 
 from database import db, Color
 
-def make_image(event):
+LAST_RERENDER = None
+AMENDMENTS_SINCE_LAST_REDRAW = 0
+FORCE_REDRAW_INTERVAL = 60 # seconds
+FORCE_REDRAW_INTERMITTENT = 100 # amendments
+CURRENT_IMAGE = None
+
+def make_image(event, pixels=None):
+    global LAST_RERENDER, AMENDMENTS_SINCE_LAST_REDRAW
+
+    redraw = False
+    current_time = time.time()
+
+    # redraw conditions
+    if LAST_RERENDER is None:
+        redraw = True
+
+    elif LAST_RERENDER + FORCE_REDRAW_INTERVAL < current_time:
+        redraw = True
+
+    elif AMENDMENTS_SINCE_LAST_REDRAW > FORCE_REDRAW_INTERMITTENT:
+        redraw = True
+
+    elif CURRENT_IMAGE is None:
+        redraw = True
+
+    elif not os.path.exists(f'temp/event-{event.slug}.png'): # unlikely, but better be safe than sorry
+        redraw = True
+
+    # do redraw
+        
+    if redraw:
+        redraw_image(event)
+        LAST_RERENDER = current_time
+        AMENDMENTS_SINCE_LAST_REDRAW = 0
+    elif pixels is None:
+        pass # do nothing
+    else:
+        amend_image(event, pixels)
+        AMENDMENTS_SINCE_LAST_REDRAW += len(pixels)
+
+
+def amend_image(event, pixels):
+    global CURRENT_IMAGE
+
+    im = CURRENT_IMAGE
+    for pixel in pixels:
+        im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
+
+
+def redraw_image(event):
+    global CURRENT_IMAGE
+
     dim = event.big_pixel_factor
     imw = (event.canvas_width) * dim
     imh = (event.canvas_height) * dim
@@ -17,12 +68,23 @@ def make_image(event):
         im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
 
     im.save(f'temp/event-{event.slug}.png', 'PNG')
+    CURRENT_IMAGE = im
+
 
 def make_or_load_image(event, bypass_cache=False):
+    global CURRENT_IMAGE
+
     if not os.path.exists(f'temp/event-{event.slug}.png') or bypass_cache:
-        make_image(event)
+        redraw_image(event)
     
-    return send_file(f'temp/event-{event.slug}.png', mimetype='image/png')
+    elif CURRENT_IMAGE is None:
+        CURRENT_IMAGE = Image.open(f'temp/event-{event.slug}.png')
+    
+    img_io = io.BytesIO()
+    CURRENT_IMAGE.save(img_io, 'PNG')
+    img_io.seek(0)
+
+    return send_file(img_io, mimetype='image/png')
 
 
 def import_image(event, image_file, canv_grid=True):
@@ -43,7 +105,7 @@ def import_image(event, image_file, canv_grid=True):
         else:
             pixel.color = closest_color_to(colors, fim.getpixel((pixel.pos_x, pixel.pos_y)))
 
-    make_image(event)
+    redraw_image(event)
 
     db.session.commit()
 
