@@ -1,6 +1,6 @@
 {% extends "layouts/frontend.html" %}
 {% block head %}
-<noscript><meta http-equiv="refresh" content="5"></noscript>
+<noscript><meta http-equiv="refresh" content="{{ refresh_rate // 1000 or 1 }}"></noscript>
 <script src="{{ url_for('static', filename='graceful-refresh.js') }}" defer></script>
 {% endblock %}
 {% block body %}
