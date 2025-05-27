@@ -39,6 +39,8 @@ def make_image(event, pixels=None):
         redraw_image(event)
         LAST_RERENDER = current_time
         AMENDMENTS_SINCE_LAST_REDRAW = 0
+    elif pixels is None:
+        pass # do nothing
     else:
         amend_image(event, pixels)
         AMENDMENTS_SINCE_LAST_REDRAW += len(pixels)
@@ -73,7 +75,7 @@ def make_or_load_image(event, bypass_cache=False):
     global CURRENT_IMAGE
 
     if not os.path.exists(f'temp/event-{event.slug}.png') or bypass_cache:
-        make_image(event)
+        redraw_image(event)
     
     elif CURRENT_IMAGE is None:
         CURRENT_IMAGE = Image.open(f'temp/event-{event.slug}.png')

@@ -55,7 +55,7 @@ with app.app_context():
         db.session.add(Color(hexcode=v, hue=hue, lightness=lightness))
     
 
-    for role in ['api', 'users', 'events', 'edit', 'rate']:
+    for role in ['api', 'users', 'events', 'edit', 'rate', 'nocache']:
         db.session.add(Role(name=role))
 
     db.session.commit()

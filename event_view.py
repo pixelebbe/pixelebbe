@@ -38,5 +38,10 @@ def beamer():
 @event_view.route("/view.png")
 @check_and_apply_event
 def view_png():
-    # TODO: remove `nocache` before going to production
-    return imh.make_or_load_image(g.event, bypass_cache=('nocache' in request.values))
+    bypass_cache = False
+
+    if 'nocache' in request.values:
+        if current_user.is_authenticated and current_user.has_role('nocache'):
+            bypass_cache = True
+
+    return imh.make_or_load_image(g.event, bypass_cache=bypass_cache)
