@@ -6,6 +6,6 @@
 {% block body %}
 <div class="beamer">
     <h1>pixeleb.be @ {{ g.event.title }}</h1>
-    <img src="{{ url_for('event.view_png', event=g.event.slug) }}" alt="">
+    <img src="{{ url_for('event.view_png', event=g.event.slug) }}" alt="" data-refresh-rate="{{ refresh_rate }}">
 </div>
 {% endblock %}

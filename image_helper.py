@@ -50,8 +50,7 @@ def amend_image(event, pixels):
     im = CURRENT_IMAGE
     for pixel in pixels:
         im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
-    
-    #im.save(f'temp/event-{event.slug}.png', 'PNG')
+
 
 def redraw_image(event):
     global CURRENT_IMAGE
