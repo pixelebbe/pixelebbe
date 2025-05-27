@@ -1,7 +1,9 @@
 from flask import Blueprint, g, render_template, request
+from flask_security import current_user
+
 from database import db, Event
-import image_helper as imh
 from config import SETTINGS
+import image_helper as imh
 
 event_view = Blueprint('event', __name__)
 
@@ -26,6 +28,11 @@ def index():
 @check_and_apply_event
 def beamer():
     refresh_rate = SETTINGS.get('BEAMER_REFRESH_RATE', 1000)
+
+    if 'rate' in request.values.keys():
+        if current_user.is_authenticated and current_user.has_role('rate'):
+            refresh_rate = int(request.values.get('rate'))
+
     return render_template('event/beamer.html', refresh_rate=refresh_rate)
 
 @event_view.route("/view.png")
