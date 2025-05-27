@@ -53,7 +53,7 @@ def setpixel():
     query.update({"color_id": color.id})
 
     first = True
-    for pix in query.all():
+    for pix in (pixels := query.all()):
         db.session.add(Change(event=event, color=color, pixel=pix,
                               happens_at_same_time_as_previous_change=not first,
                               change_time = datetime.now(),
@@ -62,6 +62,6 @@ def setpixel():
 
     db.session.commit()
 
-    make_image(event)
+    make_image(event, pixels)
     
     return jsonify({'status': 'success'})

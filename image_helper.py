@@ -1,11 +1,52 @@
 from flask import send_file
 
 from PIL import Image
-import os, math
+import os, math, time
 
 from database import db, Color
 
-def make_image(event):
+LAST_RERENDER = None
+AMENDMENTS_SINCE_LAST_REDRAW = 0
+FORCE_REDRAW_INTERVAL = 60 # seconds
+FORCE_REDRAW_INTERMITTENT = 100 # amendments
+
+def make_image(event, pixels=None):
+    global LAST_RERENDER, AMENDMENTS_SINCE_LAST_REDRAW
+
+    redraw = False
+    current_time = time.time()
+
+    # redraw conditions
+    if LAST_RERENDER is None:
+        redraw = True
+
+    elif LAST_RERENDER + FORCE_REDRAW_INTERVAL < current_time:
+        redraw = True
+
+    elif AMENDMENTS_SINCE_LAST_REDRAW > FORCE_REDRAW_INTERMITTENT:
+        redraw = True
+
+    elif not os.path.exists(f'temp/event-{event.slug}.png'): # unlikely, but better be safe than sorry
+        redraw = True
+
+    # do redraw
+        
+    if redraw:
+        redraw_image(event)
+        LAST_RERENDER = current_time
+        AMENDMENTS_SINCE_LAST_REDRAW = 0
+    else:
+        for pixel in pixels:
+            amend_image(event, pixel)
+            AMENDMENTS_SINCE_LAST_REDRAW += 1
+
+
+def amend_image(event, pixel):
+    im = Image.open(f'temp/event-{event.slug}.png')
+    im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
+    im.save(f'temp/event-{event.slug}.png', 'PNG')
+
+def redraw_image(event):
     dim = event.big_pixel_factor
     imw = (event.canvas_width) * dim
     imh = (event.canvas_height) * dim
@@ -43,7 +84,7 @@ def import_image(event, image_file, canv_grid=True):
         else:
             pixel.color = closest_color_to(colors, fim.getpixel((pixel.pos_x, pixel.pos_y)))
 
-    make_image(event)
+    redraw_image(event)
 
     db.session.commit()
 
