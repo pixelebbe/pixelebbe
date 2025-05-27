@@ -1,7 +1,7 @@
 from flask import send_file
 
 from PIL import Image
-import os, math, time
+import os, math, time, io
 
 from database import db, Color
 
@@ -9,6 +9,7 @@ LAST_RERENDER = None
 AMENDMENTS_SINCE_LAST_REDRAW = 0
 FORCE_REDRAW_INTERVAL = 60 # seconds
 FORCE_REDRAW_INTERMITTENT = 100 # amendments
+CURRENT_IMAGE = None
 
 def make_image(event, pixels=None):
     global LAST_RERENDER, AMENDMENTS_SINCE_LAST_REDRAW
@@ -26,6 +27,9 @@ def make_image(event, pixels=None):
     elif AMENDMENTS_SINCE_LAST_REDRAW > FORCE_REDRAW_INTERMITTENT:
         redraw = True
 
+    elif CURRENT_IMAGE is None:
+        redraw = True
+
     elif not os.path.exists(f'temp/event-{event.slug}.png'): # unlikely, but better be safe than sorry
         redraw = True
 
@@ -36,17 +40,22 @@ def make_image(event, pixels=None):
         LAST_RERENDER = current_time
         AMENDMENTS_SINCE_LAST_REDRAW = 0
     else:
-        for pixel in pixels:
-            amend_image(event, pixel)
-            AMENDMENTS_SINCE_LAST_REDRAW += 1
+        amend_image(event, pixels)
+        AMENDMENTS_SINCE_LAST_REDRAW += len(pixels)
 
 
-def amend_image(event, pixel):
-    im = Image.open(f'temp/event-{event.slug}.png')
-    im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
-    im.save(f'temp/event-{event.slug}.png', 'PNG')
+def amend_image(event, pixels):
+    global CURRENT_IMAGE
+
+    im = CURRENT_IMAGE
+    for pixel in pixels:
+        im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
+    
+    #im.save(f'temp/event-{event.slug}.png', 'PNG')
 
 def redraw_image(event):
+    global CURRENT_IMAGE
+
     dim = event.big_pixel_factor
     imw = (event.canvas_width) * dim
     imh = (event.canvas_height) * dim
@@ -58,12 +67,22 @@ def redraw_image(event):
         im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
 
     im.save(f'temp/event-{event.slug}.png', 'PNG')
+    CURRENT_IMAGE = im
 
 def make_or_load_image(event, bypass_cache=False):
+    global CURRENT_IMAGE
+
     if not os.path.exists(f'temp/event-{event.slug}.png') or bypass_cache:
         make_image(event)
     
-    return send_file(f'temp/event-{event.slug}.png', mimetype='image/png')
+    elif CURRENT_IMAGE is None:
+        CURRENT_IMAGE = Image.open(f'temp/event-{event.slug}.png')
+    
+    img_io = io.BytesIO()
+    CURRENT_IMAGE.save(img_io, 'PNG')
+    img_io.seek(0)
+
+    return send_file(img_io, mimetype='image/png')
 
 
 def import_image(event, image_file, canv_grid=True):
