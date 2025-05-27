@@ -6,5 +6,5 @@ let refreshImage = () => {
 }
 
 window.addEventListener("load", () => {
-    window.setInterval(refreshImage, 2000)
+    window.setInterval(refreshImage, 1000)
 })
