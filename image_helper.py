@@ -69,6 +69,7 @@ def redraw_image(event):
     im.save(f'temp/event-{event.slug}.png', 'PNG')
     CURRENT_IMAGE = im
 
+
 def make_or_load_image(event, bypass_cache=False):
     global CURRENT_IMAGE
 
