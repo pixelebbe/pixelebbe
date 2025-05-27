@@ -5,29 +5,28 @@ import os, math, time, io
 
 from database import db, Color
 
-LAST_RERENDER = None
-AMENDMENTS_SINCE_LAST_REDRAW = 0
+LAST_RERENDER = {}
+AMENDMENTS_SINCE_LAST_REDRAW = {}
+CURRENT_IMAGE = {}
+
 FORCE_REDRAW_INTERVAL = 60 # seconds
 FORCE_REDRAW_INTERMITTENT = 100 # amendments
-CURRENT_IMAGE = None
 
 def make_image(event, pixels=None):
-    global LAST_RERENDER, AMENDMENTS_SINCE_LAST_REDRAW
-
     redraw = False
     current_time = time.time()
 
     # redraw conditions
-    if LAST_RERENDER is None:
+    if LAST_RERENDER.get(event.slug, None) is None:
         redraw = True
 
-    elif LAST_RERENDER + FORCE_REDRAW_INTERVAL < current_time:
+    elif LAST_RERENDER.get(event.slug) + FORCE_REDRAW_INTERVAL < current_time:
         redraw = True
 
-    elif AMENDMENTS_SINCE_LAST_REDRAW > FORCE_REDRAW_INTERMITTENT:
+    elif AMENDMENTS_SINCE_LAST_REDRAW.get(event.slug, 0) > FORCE_REDRAW_INTERMITTENT:
         redraw = True
 
-    elif CURRENT_IMAGE is None:
+    elif CURRENT_IMAGE.get(event.slug, None) is None:
         redraw = True
 
     elif not os.path.exists(f'temp/event-{event.slug}.png'): # unlikely, but better be safe than sorry
@@ -37,26 +36,22 @@ def make_image(event, pixels=None):
         
     if redraw:
         redraw_image(event)
-        LAST_RERENDER = current_time
-        AMENDMENTS_SINCE_LAST_REDRAW = 0
+        LAST_RERENDER[event.slug] = current_time
+        AMENDMENTS_SINCE_LAST_REDRAW[event.slug] = 0
     elif pixels is None:
         pass # do nothing
     else:
         amend_image(event, pixels)
-        AMENDMENTS_SINCE_LAST_REDRAW += len(pixels)
+        AMENDMENTS_SINCE_LAST_REDRAW[event.slug] += len(pixels)
 
 
 def amend_image(event, pixels):
-    global CURRENT_IMAGE
-
-    im = CURRENT_IMAGE
+    im = CURRENT_IMAGE[event.slug]
     for pixel in pixels:
         im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
 
 
 def redraw_image(event):
-    global CURRENT_IMAGE
-
     dim = event.big_pixel_factor
     imw = (event.canvas_width) * dim
     imh = (event.canvas_height) * dim
@@ -68,20 +63,18 @@ def redraw_image(event):
         im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
 
     im.save(f'temp/event-{event.slug}.png', 'PNG')
-    CURRENT_IMAGE = im
+    CURRENT_IMAGE[event.slug] = im
 
 
 def make_or_load_image(event, bypass_cache=False):
-    global CURRENT_IMAGE
-
     if not os.path.exists(f'temp/event-{event.slug}.png') or bypass_cache:
         redraw_image(event)
     
-    elif CURRENT_IMAGE is None:
-        CURRENT_IMAGE = Image.open(f'temp/event-{event.slug}.png')
+    elif CURRENT_IMAGE.get(event.slug, None) is None:
+        CURRENT_IMAGE[event.slug] = Image.open(f'temp/event-{event.slug}.png')
     
     img_io = io.BytesIO()
-    CURRENT_IMAGE.save(img_io, 'PNG')
+    CURRENT_IMAGE[event.slug].save(img_io, 'PNG')
     img_io.seek(0)
 
     return send_file(img_io, mimetype='image/png')
