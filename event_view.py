@@ -1,7 +1,8 @@
 from flask import Blueprint, g, render_template, request
 from flask_security import current_user
+import json
 
-from database import db, Event
+from database import db, Event, Color
 from config import SETTINGS
 import image_helper as imh
 
@@ -21,7 +22,19 @@ def check_and_apply_event(func):
 @event_view.route("/")
 @check_and_apply_event
 def index():
-    return render_template('event/index.html')
+    all_colors = Color.query.all()
+
+    submit_options = []
+
+    for opt in g.event.submit_options:
+        submit_options.append(
+            render_template(f"submit_method/{opt.method.file_name}.html",
+                            items = [json.loads(opt.options)],
+                            event=g.event)
+        )
+
+    return render_template('event/index.html', submit_options=submit_options,
+                           all_colors=all_colors)
 
 
 @event_view.route("/beamer")
