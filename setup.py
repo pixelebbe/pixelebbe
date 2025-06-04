@@ -1,5 +1,5 @@
 from app import app, db
-from database import Color, Role
+from database import Color, Role, SubmitMethod
 from flask_migrate import stamp
 
 with app.app_context():
@@ -57,6 +57,14 @@ with app.app_context():
 
     for role in ['api', 'users', 'events', 'edit', 'rate', 'nocache']:
         db.session.add(Role(name=role))
+
+    for sm in [
+        { "title": "in person", "file_name": "personal", "default_options": '{"name": "...", "identify": "...", "limits": "..."}' },
+        { "title": "phone call (manual)", "file_name": "phone_manual", "default_options": '{"number": "...", "mnemonic": "..."}' },
+        { "title": "via chaospost", "file_name": "chaospost", "default_options": '{"address_field": "..."}' }
+        ]:
+        db.session.add(SubmitMethod(title=sm['title'], file_name=sm['file_name'],
+                                    default_options=sm['default_options'], active=True))
 
     db.session.commit()
 
