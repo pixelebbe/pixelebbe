@@ -1,0 +1,13 @@
+{% extends "layouts/backend.html" %}
+{% block body %}
+    <h1>add submit method for {{ event.title }}</h1>
+
+    <p>choose a method type:</p>
+
+    {% for method in all_methods %}
+        <p>
+            <a href="{{ url_for('admin.event_new_submit_method', event=event.slug, type=method.id) }}">{{ method.title }}</a>
+            {% if method.description %} &middot; {{ method.description }}{% endif %}
+        </p>
+    {% endfor %}
+{% endblock %}

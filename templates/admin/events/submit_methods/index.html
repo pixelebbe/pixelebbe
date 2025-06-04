@@ -2,7 +2,7 @@
 {% block body %}
     <h1>submit methods for {{ event.title }}</h1>
 
-    <a href="">add method</a>
+    <a href="{{ url_for('admin.event_new_submit_method', event=event.slug) }}">add method</a>
 
     <ul>
         {% for so in event.submit_options.order_by('order') %}
