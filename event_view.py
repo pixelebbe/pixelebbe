@@ -24,16 +24,29 @@ def check_and_apply_event(func):
 def index():
     all_colors = Color.query.all()
 
-    submit_options = []
+    submit_options = {}
 
-    for opt in g.event.submit_options:
-        submit_options.append(
-            render_template(f"submit_method/{opt.method.file_name}.html",
-                            items = [json.loads(opt.options)],
+    for opt in g.event.submit_options.filter_by(active=True).all():
+        if opt.method.id in submit_options.keys():
+            submit_options[opt.method.id][1].append(json.loads(opt.options))
+
+            if opt.order < submit_options[opt.method.id][2]:
+                submit_options[opt.method.id][2] = opt.order
+        else:
+            submit_options[opt.method.id] = [opt.method, [json.loads(opt.options)], opt.order]
+
+    submit_options = sorted(submit_options.values(), key= lambda o: o[1])
+
+    submit_renders = []
+
+    for meth, opt, pos in submit_options:
+        submit_renders.append(
+            render_template(f"submit_method/{meth.file_name}.html",
+                            items = opt,
                             event=g.event)
         )
 
-    return render_template('event/index.html', submit_options=submit_options,
+    return render_template('event/index.html', submit_options=submit_renders,
                            all_colors=all_colors)
 
 
