@@ -35,7 +35,7 @@ def index():
         else:
             submit_options[opt.method.id] = [opt.method, [json.loads(opt.options)], opt.order]
 
-    submit_options = sorted(submit_options.values(), key= lambda o: o[1])
+    submit_options = sorted(submit_options.values(), key= lambda o: o[2])
 
     submit_renders = []
 

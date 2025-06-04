@@ -1,0 +1,13 @@
+<li>
+    <p>just talk to us in person if you see us and convince us to set a pixel (x between 0 and {{ event.canvas_width }}, y between 0 and {{ event.canvas_height }}) for you:</p>
+
+    <ul>
+        {% for person in items %}
+            <li>
+                <strong>{{ person.name }}</strong>, which you can identify by: {{ person.identify }}, but please respect: {{ person.limits }}
+            </li>
+        {% endfor %}
+    </ul>
+
+    </p>
+</li>
