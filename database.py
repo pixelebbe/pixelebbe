@@ -126,3 +126,28 @@ class User(db.Model, fsqla.FsUserMixin):
         token = hashlib.shake_256(private_key.encode('utf-8')).hexdigest(256)
         
         return token == self.api_private_token
+    
+
+class SubmitMethod(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+
+    title = db.Column(db.String(65))
+    file_name = db.Column(db.String(15))
+ 
+    description = db.Column(db.String(255))
+    active = db.Column(db.Boolean())
+    default_options = db.Column(db.Text())
+
+
+class EventSubmitOption(db.Model):
+    id = db.Column(db.Integer(), primary_key=True)
+
+    event_id = db.Column(db.Integer(), db.ForeignKey('event.id'))
+    event = db.relationship('Event', backref=db.backref('submit_options', lazy='dynamic'))
+
+    method_id = db.Column(db.Integer(), db.ForeignKey('submit_method.id'))
+    method = db.relationship('SubmitMethod')
+
+    options = db.Column(db.Text())
+    active = db.Column(db.Boolean())
+    order = db.Column(db.Integer())
