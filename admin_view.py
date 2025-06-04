@@ -145,6 +145,7 @@ def event_edit_submit_method(event, method):
     if request.method == 'POST':
         option.options = request.form['options']
         option.order = int(request.form['order'])
+        option.active = 'active' in request.form
         db.session.commit()
 
         return redirect(url_for('admin.event_submit_methods', event=event.slug))
@@ -167,6 +168,7 @@ def event_new_submit_method(event):
         if request.method == 'POST':
             option.options = request.form['options']
             option.order = int(request.form['order'])
+            option.active = 'active' in request.form
             db.session.add(option)
             db.session.commit()
 

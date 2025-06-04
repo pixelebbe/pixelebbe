@@ -15,6 +15,11 @@
             <input id="order" name="order" type="number" value="{{ option.order }}">
         </p>
 
+        <p>
+            <input id="active" name="active" type="checkbox" {{ 'checked' if option.active }}>
+            <label for="active">active</label>
+        </p>
+
         <button type="submit">create</button>
     </form>
 {% endblock %}
