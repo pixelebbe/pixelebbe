@@ -128,6 +128,30 @@ def event_overwrite(event):
     return render_template("admin/events/overwrite.html", event=event, all_colors=all_colors)
 
 
+@admin_view.route("/events/<event>/methods")
+@roles_required('events')
+def event_submit_methods(event):
+    event = Event.from_slug(event)
+
+    return render_template("admin/events/submit_methods/index.html", event=event)
+
+
+@admin_view.route("/events/<event>/methods/edit/<method>", methods=['GET', 'POST'])
+@roles_required('events')
+def event_edit_submit_method(event, method):
+    event = Event.from_slug(event)
+    option = event.submit_options.filter_by(id=method).one_or_404()
+
+    if request.method == 'POST':
+        option.options = request.form['options']
+        option.order = int(request.form['order'])
+        db.session.commit()
+
+        return redirect(url_for('admin.event_submit_methods', event=event.slug))
+
+    return render_template("admin/events/submit_methods/edit.html", event=event, option=option)
+
+
 @admin_view.route("/api-keys", methods=['GET', 'POST'])
 @roles_required('api')
 def api_keys():

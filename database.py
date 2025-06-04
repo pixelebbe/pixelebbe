@@ -4,6 +4,7 @@ from PIL import ImageColor
 import random
 import hashlib
 import base64
+import json
 
 db = SQLAlchemy()
 fsqla.FsModels.set_db_info(db)
@@ -151,3 +152,6 @@ class EventSubmitOption(db.Model):
     options = db.Column(db.Text())
     active = db.Column(db.Boolean())
     order = db.Column(db.Integer())
+
+    def options_string(self):
+        return ", ".join(f"{k}={v}" for k, v in json.loads(self.options).items())

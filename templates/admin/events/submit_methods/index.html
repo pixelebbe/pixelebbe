@@ -1,0 +1,12 @@
+{% extends "layouts/backend.html" %}
+{% block body %}
+    <h1>submit methods for {{ event.title }}</h1>
+
+    <a href="">add method</a>
+
+    <ul>
+        {% for so in event.submit_options.order_by('order') %}
+            <li>{{ so.order }}. <strong>{{ so.method.title }}</strong> {{ so.options_string() }} &middot; <a href="{{ url_for('admin.event_edit_submit_method', event=event.slug, method=so.id) }}">edit</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}
