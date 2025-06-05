@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, url_for, render_template, request, abort, current_app
 from flask_security import auth_required, roles_required, current_user, hash_password
-from database import db, Event, Color, User, Role, Change
+from database import db, Event, Color, User, Role, Change, EventSubmitOption, SubmitMethod
 from image_helper import make_image, import_image, redraw_image
 from datetime import datetime
 
@@ -126,6 +126,57 @@ def event_overwrite(event):
             redraw_image(event)
 
     return render_template("admin/events/overwrite.html", event=event, all_colors=all_colors)
+
+
+@admin_view.route("/events/<event>/methods")
+@roles_required('events')
+def event_submit_methods(event):
+    event = Event.from_slug(event)
+
+    return render_template("admin/events/submit_methods/index.html", event=event)
+
+
+@admin_view.route("/events/<event>/methods/edit/<method>", methods=['GET', 'POST'])
+@roles_required('events')
+def event_edit_submit_method(event, method):
+    event = Event.from_slug(event)
+    option = event.submit_options.filter_by(id=method).one_or_404()
+
+    if request.method == 'POST':
+        option.options = request.form['options']
+        option.order = int(request.form['order'])
+        option.active = 'active' in request.form
+        db.session.commit()
+
+        return redirect(url_for('admin.event_submit_methods', event=event.slug))
+
+    return render_template("admin/events/submit_methods/edit.html", event=event, option=option)
+
+
+@admin_view.route("/events/<event>/methods/new", methods=['GET', 'POST'])
+@roles_required('events')
+def event_new_submit_method(event):
+    event = Event.from_slug(event)
+    option = EventSubmitOption(event=event, order=event.submit_options.count() + 1)
+    all_methods = SubmitMethod.query.filter_by(active=True).all()
+    
+    if 'type' in request.values:
+        method = SubmitMethod.query.get_or_404(request.values['type'])
+        option.method = method
+        option.options = method.default_options
+
+        if request.method == 'POST':
+            option.options = request.form['options']
+            option.order = int(request.form['order'])
+            option.active = 'active' in request.form
+            db.session.add(option)
+            db.session.commit()
+
+            return redirect(url_for('admin.event_submit_methods', event=event.slug))
+
+        return render_template("admin/events/submit_methods/new_form.html", event=event, option=option)
+
+    return render_template("admin/events/submit_methods/new.html", event=event, all_methods=all_methods)
 
 
 @admin_view.route("/api-keys", methods=['GET', 'POST'])

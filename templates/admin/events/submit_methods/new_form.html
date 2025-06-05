@@ -1,0 +1,25 @@
+{% extends "layouts/backend.html" %}
+{% block body %}
+    <h1>add submit method for {{ event.title }}</h1>
+
+    <form action="" method="post">
+        <p>method: <strong>{{ option.method.title }}</strong></p>
+
+        <p>
+            <label for="options">options</label>
+            <textarea name="options" id="options">{{ option.options }}</textarea>
+        </p>
+
+        <p>
+            <label for="order">position</label>
+            <input id="order" name="order" type="number" value="{{ option.order }}">
+        </p>
+
+        <p>
+            <input id="active" name="active" type="checkbox" {{ 'checked' if option.active }}>
+            <label for="active">active</label>
+        </p>
+
+        <button type="submit">create</button>
+    </form>
+{% endblock %}

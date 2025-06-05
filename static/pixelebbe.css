@@ -65,3 +65,8 @@ img.ebbe {
     opacity: 0;
     cursor: default;
 }
+
+textarea {
+    min-width: 350px;
+    min-height: 150px;
+}

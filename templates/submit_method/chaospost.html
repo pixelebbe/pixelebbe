@@ -1,0 +1,11 @@
+<li>
+    <p>you can also send us a <em>handwritten</em> (!) chaos post card with your pixel (x between 0 and {{ event.canvas_width }}, y between 0 and {{ event.canvas_height }}) to the following recipient{{ 's' if items|length != 1 }}:</p>
+
+    <ul>
+        {% for recipient in items %}
+            <li><pre>{{ recipient.address_field }}</pre></li>
+        {% endfor %}
+    </ul>
+
+    <p>because we care to prevent spam that annoys the chaos post, only handwritten post cards will be accepted; please be considerate and excellent with the chaos post infrastructure</p>
+</li>

@@ -6,5 +6,33 @@
 
     <a href="{{ url_for('event.beamer', event=g.event.slug) }}"><img src="{{ url_for('event.view_png', event=g.event.slug) }}" alt="" class="ebbe"></a>
 
+    <hr>
+
     <h2>how to request a pixel change</h2>
+
+    <p>you can request a pixel change using any of the following methods:</p>
+
+    <ol>
+        {% for opt in submit_options %}
+            {{ opt|safe }}
+        {% endfor %}
+    </ol>
+
+    <p>we support the following color values (written in the schema "color name (hex code)"):</p>
+
+    <table>
+        <tr>
+            {% for color in all_colors if color.hexcode != '#nonono' %}
+                {% if loop.index0 % 4 == 0 %}</tr><tr>{% endif %}
+                <td style="background-color: {{ color.hexcode }}; {{ 'color:white' if color.lightness in ['1', '2'] or color.hue == 'K' or (color.lightness == '3' and color.hue == 'B') }}">
+                    <strong>{{ color.hue }}{{ color.lightness }}</strong>
+                    (<code>{{ color.hexcode }}</code>)
+                </td>
+            {% endfor %}
+        </tr>
+    </table>
+
+    <p>
+            
+        </p>
 {% endblock %}

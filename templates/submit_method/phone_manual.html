@@ -1,0 +1,13 @@
+<li>
+    <p>you can contact us via phone and tell us which pixel (x between 0 and {{ event.canvas_width }}, y between 0 and {{ event.canvas_height }}) you want to change to which of the colors.</p>
+    <p>call:
+        {% for phone in items %}
+            {% if phone.mnemonic %}
+                <a href="tel:{{ phone.number }}"><strong>{{ phone.number }}</strong> ({{ phone.mnemonic }})</a>
+            {% else %}
+                <a href="tel:{{ phone.number }}"><strong>{{ phone.number }}</strong></a>
+            {% endif %}
+            {{ "or" if not loop.last }}
+        {% endfor %}
+    </p>
+</li>
