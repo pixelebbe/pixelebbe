@@ -43,6 +43,14 @@ def index():
     return render_template('index.html', events=active_events)
 
 
+@app.route("/datenschutz/informationen-bei-der-verwendung-der-telefonbasierten-automatischen-pixel-eingabe.php")
+@app.route("/datenschutz/informationen-bei-der-verwendung-der-pixel-eingabe-via-fax.aspx")
+@app.route("/datenschutz/informationen-bei-der-eingabe-von-pixeln-via-dect-oder-chaospostzustellung.java.exe")
+@app.route("/datenschutz/informationen-im-zusammenhang-mit-der-allgemeinen-verwendung-dieser-webseite.docx")
+def privacy_policy():
+    return render_template('privacy-policy.html')
+
+
 app.register_blueprint(event_view, url_prefix="/at/<event>")
 app.register_blueprint(admin_view, url_prefix="/admin")
 app.register_blueprint(api_view, url_prefix="/api")
