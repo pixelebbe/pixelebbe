@@ -34,8 +34,10 @@
     <h2>sources</h2>
 
     <ol>
-        {% for uc in changes_per_source %}
+        {% for uc in changes_per_source[:30] %}
             <li><strong>{{ uc[1] }}</strong> via {{ uc[0] }} with {{ uc[2] }} changes</li>
         {% endfor %}
     </ol>
+
+    <p>limited to 30 sources, total: {{ changes_per_source|length }} different sources</p>
 {% endblock %}
