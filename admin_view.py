@@ -203,11 +203,20 @@ def event_stats(event):
     
     changes_per_source = sorted(changes_per_source, key=lambda x: -x[2])
 
+    color_distribution = []
+
+    for col in Color.query.all():
+        color_distribution.append((col, event.pixels.filter_by(color=col).count()))
+
+    color_distribution = sorted(color_distribution, key=lambda x: -x[1])
+
+
     return render_template("admin/events/stats.html", event=event,
                            pixels_no=pixels_no, changes_no=changes_no, chreq_no=chreq_no,
                            avg_pixels_per_change=avg_pixels_per_change,
                            changes_per_user=changes_per_user,
-                           changes_per_source=changes_per_source)
+                           changes_per_source=changes_per_source,
+                           color_distribution=color_distribution)
 
 
 @admin_view.route("/api-keys", methods=['GET', 'POST'])

@@ -40,4 +40,12 @@
     </ol>
 
     <p>limited to 30 sources, total: {{ changes_per_source|length }} different sources</p>
+
+    <h2>colors</h2>
+
+    <ol>
+        {% for col in color_distribution if col[1] != 0 and col[0].hexcode != "#nonono" %}
+            <li><strong style="background-color: {{ col[0].hexcode }}; padding: 0 0.25em;">{{ col[0].hue }}{{ col[0].lightness }}</strong> currently displayed {{ col[1] }}&times;</li>
+        {% endfor %}
+    </ol>
 {% endblock %}
