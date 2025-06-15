@@ -57,7 +57,7 @@ def setpixel():
         db.session.add(Change(event=event, color=color, pixel=pix,
                               happens_at_same_time_as_previous_change=not first,
                               change_time = datetime.now(),
-                              user=g.api_user, source=request.values.get('source', 'none')))
+                              user=g.api_user, source=request.values.get('source', '')))
         first = False
 
     db.session.commit()

@@ -199,7 +199,7 @@ def event_stats(event):
     changes_per_source = event.changes.join(User) \
         .with_entities(User.username, Change.source, db.func.count(User.id)) \
         .group_by(User.id, Change.source) \
-        .filter((Change.source != 'none') & (Change.source != '')).all()
+        .filter(Change.source != '').all()
     
     changes_per_source = sorted(changes_per_source, key=lambda x: -x[2])
 
