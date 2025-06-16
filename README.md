@@ -1,7 +1,7 @@
 # Pixelebbe
 
 Pixelebbe is like Pixelflut, but slower.
-Get your hacker friends together and fill the canvas with color!
+Get your (hacker) friends together and fill the canvas with color(s)!
 Submit your pixel change requests via word-of-mouth, Eventphone DECT Call, a phone tree or fax.
 We also accept ChaosPost!
 
@@ -18,20 +18,19 @@ We also accept ChaosPost!
 
 The codebase currently implements:
 
-- Basic Flask application setup with SQLAlchemy and migrations
 - A predefined color palette with 32 colors (for now)
-
-Still in development:
 - Event management system for handling multiple canvases
 - Admin interface for event configuration
 - API endpoints for pixel manipulation
-- Rate limiting implementation
 - User authentication system
 - Pixel history visualization
 
+Still in development:
+- Sane Rate limiting implementation
+
 ## Requirements
 
-- Python 3.6+
+- Python 3.8+
 - Flask
 - Flask-SQLAlchemy
 - Flask-Migrate
