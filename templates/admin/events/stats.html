@@ -1,0 +1,51 @@
+{% extends "layouts/backend.html" %}
+{% block body %}
+    <h1>stats for {{ event.title }}</h1>
+
+    <h2>pixel and change info</h2>
+
+    <ul>
+        <li>
+            <strong>number of pixels</strong>:
+            {{ pixels_no }}
+        </li>
+        <li>
+            <strong>pixels changed</strong>:
+            {{ changes_no }}
+        </li>
+        <li>
+            <strong>change requests</strong>:
+            {{ chreq_no }}
+        </li>
+        <li>
+            <strong>avg pixels changed per change request</strong>:
+            {{ avg_pixels_per_change }}
+        </li>
+    </ul>
+
+    <h2>users</h2>
+
+    <ol>
+        {% for uc in changes_per_user %}
+            <li><strong>{{ uc[0] }}</strong> with {{ uc[1] }} changes</li>
+        {% endfor %}
+    </ol>
+
+    <h2>sources</h2>
+
+    <ol>
+        {% for uc in changes_per_source[:30] %}
+            <li><strong>{{ uc[1] }}</strong> via {{ uc[0] }} with {{ uc[2] }} changes</li>
+        {% endfor %}
+    </ol>
+
+    <p>limited to 30 sources, total: {{ changes_per_source|length }} different sources</p>
+
+    <h2>colors</h2>
+
+    <ol>
+        {% for col in color_distribution if col[1] != 0 and col[0].hexcode != "#nonono" %}
+            <li><strong style="background-color: {{ col[0].hexcode }}; padding: 0 0.25em;">{{ col[0].hue }}{{ col[0].lightness }}</strong> currently displayed {{ col[1] }}&times;</li>
+        {% endfor %}
+    </ol>
+{% endblock %}

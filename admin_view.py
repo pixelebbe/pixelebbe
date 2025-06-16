@@ -179,6 +179,46 @@ def event_new_submit_method(event):
     return render_template("admin/events/submit_methods/new.html", event=event, all_methods=all_methods)
 
 
+@admin_view.route("/events/<event>/stats")
+@roles_required('events')
+def event_stats(event):
+    event = Event.from_slug(event)
+
+    pixels_no = event.pixels.count()
+    changes_no = event.changes.count()
+    chreq_no = event.changes.filter_by(happens_at_same_time_as_previous_change=False).count()
+
+    avg_pixels_per_change = "%.2d" % (changes_no / chreq_no)
+
+    changes_per_user = event.changes.join(User) \
+        .with_entities(User.username, db.func.count(User.id)) \
+        .group_by(User.id).all()
+    
+    changes_per_user = sorted(changes_per_user, key=lambda x: -x[1])
+
+    changes_per_source = event.changes.join(User) \
+        .with_entities(User.username, Change.source, db.func.count(User.id)) \
+        .group_by(User.id, Change.source) \
+        .filter(Change.source != '').all()
+    
+    changes_per_source = sorted(changes_per_source, key=lambda x: -x[2])
+
+    color_distribution = []
+
+    for col in Color.query.all():
+        color_distribution.append((col, event.pixels.filter_by(color=col).count()))
+
+    color_distribution = sorted(color_distribution, key=lambda x: -x[1])
+
+
+    return render_template("admin/events/stats.html", event=event,
+                           pixels_no=pixels_no, changes_no=changes_no, chreq_no=chreq_no,
+                           avg_pixels_per_change=avg_pixels_per_change,
+                           changes_per_user=changes_per_user,
+                           changes_per_source=changes_per_source,
+                           color_distribution=color_distribution)
+
+
 @admin_view.route("/api-keys", methods=['GET', 'POST'])
 @roles_required('api')
 def api_keys():
