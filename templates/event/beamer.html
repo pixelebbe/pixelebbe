@@ -1,11 +1,5 @@
-{% extends "layouts/frontend.html" %}
-{% block head %}
-<noscript><meta http-equiv="refresh" content="{{ refresh_rate // 1000 or 1 }}"></noscript>
-<script src="{{ url_for('static', filename='graceful-refresh.js') }}" defer></script>
-{% endblock %}
+{% extends "layouts/frontend-beamer.html" %}
 {% block body %}
-<div class="beamer">
-    <h1>pixeleb.be @ {{ g.event.title }}</h1>
-    <img src="{{ url_for('event.view_png', event=g.event.slug) }}" alt="" data-refresh-rate="{{ refresh_rate }}">
-</div>
+<h1>pixeleb.be @ {{ g.event.title }}</h1>
+<img src="{{ url_for('event.view_png', event=g.event.slug) }}" alt="" data-refresh-rate="{{ refresh_rate }}">
 {% endblock %}
