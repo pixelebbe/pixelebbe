@@ -31,7 +31,7 @@ img.ebbe {
     max-width: 600px;
     height: auto;
     max-height: 450px;
-    image-rendering: crisp-edges;
+    image-rendering: pixelated;
     object-fit: contain;
 }
 
@@ -54,7 +54,7 @@ img.ebbe {
     width: 100vmin;
     height: 75vmin;
     object-fit: contain;
-    image-rendering: crisp-edges;
+    image-rendering: pixelated;
 }
 
 .beamer.is-msedge img {
