@@ -10,7 +10,9 @@
 <body>
     <a href="{{ url_for('admin.index') }}" class="admin-link">admin</a>
     {% block body %}{% endblock body %}
+    {% if not hide_footer %}
     <hr>
     <p><a href="/datenschutz/informationen-im-zusammenhang-mit-der-allgemeinen-verwendung-dieser-webseite.docx">privacy policy</a></p>
+    {% endif %}
 </body>
 </html>
