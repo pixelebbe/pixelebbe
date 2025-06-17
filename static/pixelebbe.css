@@ -55,6 +55,7 @@ img.ebbe {
     height: 75vmin;
     object-fit: contain;
     image-rendering: crisp-edges;
+    pointer-events: none;
 }
 
 .admin-link {
