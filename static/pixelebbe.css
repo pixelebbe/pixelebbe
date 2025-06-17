@@ -41,7 +41,7 @@ img.ebbe {
     align-items: center;
     height: 100vh;
     padding: 2rem;
-    margin: -0.25em -0.5em;
+    margin: 0;
     width: 100vw;
     background-color: black;
     color: white;
@@ -55,6 +55,9 @@ img.ebbe {
     height: 75vmin;
     object-fit: contain;
     image-rendering: crisp-edges;
+}
+
+.beamer.why-would-you-use-a-terrible-browser-such-as-msedge img {
     pointer-events: none;
 }
 
