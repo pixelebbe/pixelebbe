@@ -57,7 +57,7 @@ img.ebbe {
     image-rendering: crisp-edges;
 }
 
-.beamer.why-would-you-use-a-terrible-browser-such-as-msedge img {
+.beamer.is-msedge img {
     pointer-events: none;
 }
 
