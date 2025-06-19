@@ -18,9 +18,9 @@
         {% endfor %}
     </ol>
 
-    <p>please note that corruption is expressively not prohibited.</p>
+    <p>please note that bribery and corruption is expressively not prohibited.</p>
 
-    <p>we support the following color values (written in the schema "color name (hex code)"):</p>
+    <p>we support the following color values (written in the schema "color name &ndash; hex code (voice bot id)"):</p>
 
     <table>
         <tr>
@@ -28,7 +28,8 @@
                 {% if loop.index0 % 4 == 0 %}</tr><tr>{% endif %}
                 <td style="background-color: {{ color.hexcode }}; {{ 'color:white' if color.lightness in ['1', '2'] or color.hue == 'K' or (color.lightness == '3' and color.hue == 'B') }}">
                     <strong>{{ color.hue }}{{ color.lightness }}</strong>
-                    (<code>{{ color.hexcode }}</code>)
+                    &ndash; <code>{{ color.hexcode }}</code>
+                    ({{ color.id }})
                 </td>
             {% endfor %}
         </tr>

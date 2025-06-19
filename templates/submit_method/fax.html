@@ -1,0 +1,17 @@
+<li>
+    <p>you can also send us a pixel via fax, make sure you write legible so that our enslaved government workers (our computer) can parse it</p>
+
+    <ul>
+        {% for fax in items %}
+            <li>
+                send it to
+                {% if fax.mnemonic %}
+                    <a href="tel:{{ fax.fax_no }}"><strong>{{ fax.fax_no }}</strong> ({{ fax.mnemonic }})</a>
+                {% else %}
+                    <a href="tel:{{ fax.fax_no }}"><strong>{{ fax.fax_no }}</strong></a>
+                {% endif %}
+                using the <a href="{{ fax.template_url }}" target="_blank">provided template</a>
+            </li>
+        {% endfor %}
+    </ul>
+</li>
