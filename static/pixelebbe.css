@@ -61,6 +61,15 @@ img.ebbe {
     pointer-events: none;
 }
 
+.beamer h1 {
+    font-size: 3em;
+}
+
+.beamer p {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
 .admin-link {
     position: absolute;
     right: 0;
