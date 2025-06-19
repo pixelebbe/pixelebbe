@@ -1,0 +1,16 @@
+<li>
+    <p>if you want to sent a lot of pixels or if you cannot reach us via our manual phone numbers you can also contact our certifiedly happy voice bot and inform it of the pixel (x between 0 and {{ event.canvas_width * event.big_pixel_factor }}, y between 0 and {{ event.canvas_height * event.big_pixel_factor }}) you want to change to which of the colors (use the "voice bot id" in the table below).</p>
+
+    <p>to enter your pixel use the following command <code>#x#y#color*</code></p>
+
+    <p>call:
+        {% for phone in items %}
+            {% if phone.mnemonic %}
+                <a href="tel:{{ phone.number }}"><strong>{{ phone.number }}</strong> ({{ phone.mnemonic }})</a>
+            {% else %}
+                <a href="tel:{{ phone.number }}"><strong>{{ phone.number }}</strong></a>
+            {% endif %}
+            {{ "or" if not loop.last }}
+        {% endfor %}
+    </p>
+</li>
