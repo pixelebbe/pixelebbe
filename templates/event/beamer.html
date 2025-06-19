@@ -2,4 +2,6 @@
 {% block body %}
 <h1>pixeleb.be @ {{ g.event.title }}</h1>
 <img src="{{ url_for('event.view_png', event=g.event.slug) }}" alt="" data-refresh-rate="{{ refresh_rate }}">
+
+<p>Ask us for information on how to set a pixel or go to https://pixeleb.be</p>
 {% endblock %}
