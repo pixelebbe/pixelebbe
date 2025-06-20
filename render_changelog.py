@@ -15,9 +15,10 @@ FRAME_SPLIT = 50
 
 def create_first_frame(event):
     dim = event.big_pixel_factor
-    data = np.zeros(shape=(event.canvas_height * dim,
+    data = np.full(shape=(event.canvas_height * dim,
                            event.canvas_width * dim,
-                           3))
+                           3),
+                   fill_value=255)
     return data
 
 def render_frame(previous_frame, change):
