@@ -188,7 +188,7 @@ def event_stats(event):
     changes_no = event.changes.count()
     chreq_no = event.changes.filter_by(happens_at_same_time_as_previous_change=False).count()
 
-    avg_pixels_per_change = "%.2d" % (changes_no / chreq_no)
+    avg_pixels_per_change = "%.2f" % (changes_no / chreq_no)
 
     changes_per_user = event.changes.join(User) \
         .with_entities(User.username, db.func.count(User.id)) \
