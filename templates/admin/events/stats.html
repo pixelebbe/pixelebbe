@@ -39,7 +39,15 @@
         {% endfor %}
     </ol>
 
-    <p>limited to 30 sources, total: {{ changes_per_source|length }} different sources</p>
+    <h2>sources (indep. of user)</h2>
+
+    <ol>
+        {% for uc in changes_per_source_indep_of_user[:30] %}
+            <li><strong>{{ uc[0] }}</strong> with {{ uc[1] }} changes</li>
+        {% endfor %}
+    </ol>
+
+    <p>limited to 30 sources, total: {{ changes_per_source_indep_of_user|length }} different sources</p>
 
     <h2>colors</h2>
 

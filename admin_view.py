@@ -203,6 +203,13 @@ def event_stats(event):
     
     changes_per_source = sorted(changes_per_source, key=lambda x: -x[2])
 
+    changes_per_source_indep_of_user = event.changes \
+        .with_entities(Change.source, db.func.count(Change.id)) \
+        .group_by(Change.source) \
+        .filter(Change.source != '').all()
+    
+    changes_per_source_indep_of_user = sorted(changes_per_source_indep_of_user, key=lambda x: -x[1])
+
     color_distribution = []
 
     for col in Color.query.all():
@@ -216,7 +223,8 @@ def event_stats(event):
                            avg_pixels_per_change=avg_pixels_per_change,
                            changes_per_user=changes_per_user,
                            changes_per_source=changes_per_source,
-                           color_distribution=color_distribution)
+                           color_distribution=color_distribution,
+                           changes_per_source_indep_of_user=changes_per_source_indep_of_user)
 
 
 @admin_view.route("/api-keys", methods=['GET', 'POST'])
