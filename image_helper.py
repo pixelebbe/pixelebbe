@@ -73,8 +73,8 @@ def redraw_image(event):
 
     label_factor = dim // COORD_PIXEL_SIZE
 
-    for x in range(COORD_PIXEL_SIZE):
-        for y in range(COORD_PIXEL_SIZE):
+    for x in range(dim):
+        for y in range(dim):
             im.putpixel((x, y), (233, 233, 233))
 
     for sx in range(1, event.canvas_width + 1):
@@ -88,7 +88,7 @@ def redraw_image(event):
 
                         col = 225 - (pix * 8)
                         
-                        im.putpixel(((sx * COORD_PIXEL_SIZE) + (x * label_factor) + dx, (y * label_factor) + dy),
+                        im.putpixel(((sx * COORD_PIXEL_SIZE * label_factor) + (x * label_factor) + dx, (y * label_factor) + dy),
                                     (0, 0, 0) if pix_code[y][x] == "x" else (col, col, col))
 
     for sy in range(1, event.canvas_height + 1):
@@ -102,7 +102,7 @@ def redraw_image(event):
 
                         col = 225 - (pix * 8)
                         
-                        im.putpixel(((x * label_factor) + dx, (sy * COORD_PIXEL_SIZE) + (y * label_factor) + dy),
+                        im.putpixel(((x * label_factor) + dx, (sy * COORD_PIXEL_SIZE * label_factor) + (y * label_factor) + dy),
                                     (0, 0, 0) if pix_code[y][x] == "x" else (col, col, col))
 
     
@@ -110,11 +110,12 @@ def redraw_image(event):
     pixel_factor = dim // event.big_pixel_factor
 
     for pixel in pixels:
+        color = pixel.color.get_RGB()
         for dx in range(pixel_factor):
             for dy in range(pixel_factor):
                 im.putpixel(((pixel.canv_x + event.big_pixel_factor) * pixel_factor + dx,
                              (pixel.canv_y + event.big_pixel_factor) * pixel_factor + dy),
-                            pixel.color.get_RGB())
+                            color)
 
     im.save(f'temp/event-{event.slug}.png', 'PNG')
     CURRENT_IMAGE[event.slug] = im
