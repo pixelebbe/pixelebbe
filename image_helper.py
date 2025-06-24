@@ -12,6 +12,20 @@ CURRENT_IMAGE = {}
 FORCE_REDRAW_INTERVAL = 60 # seconds
 FORCE_REDRAW_INTERMITTENT = 100 # amendments
 
+COORD_PIXEL_SIZE = 8
+COORD_PIXELS = [
+    "--------:---xx---:--x--x--:--x--x--:--x--x--:--x--x--:---xx---:-------x",
+    "--------:---xx---:----x---:----x---:----x---:----x---:----x---:-------x",
+    "--------:--xxxx--:-----x--:-----x--:---xx---:--x-----:--xxxx--:-------x",
+    "--------:--xxx---:-----x--:----xx--:-----x--:-----x--:--xxx---:-------x",
+    "--------:--x-----:--x--x--:--x--x--:--xxxx--:----x---:----x---:-------x",
+    "--------:--xxxx--:--x-----:--x-----:---xx---:-----x--:--xxx---:-------x",
+    "--------:---xxx--:--x-----:--x-----:--xxx---:--x--x--:---xx---:-------x",
+    "--------:--xxxx--:-----x--:-----x--:---xxx--:-----x--:-----x--:-------x",
+    "--------:---xx---:--x--x--:--x--x--:---xx---:--x--x--:---xx---:-------x",
+    "--------:---xx---:--x--x--:---xxx--:-----x--:-----x--:--xxx---:-------x"
+]
+
 def make_image(event, pixels=None):
     redraw = False
     current_time = time.time()
@@ -52,15 +66,55 @@ def amend_image(event, pixels):
 
 
 def redraw_image(event):
-    dim = event.big_pixel_factor
-    imw = (event.canvas_width) * dim
-    imh = (event.canvas_height) * dim
+    dim = math.lcm(event.big_pixel_factor, COORD_PIXEL_SIZE)
+    imw = (event.canvas_width + 1) * dim
+    imh = (event.canvas_height + 1) * dim
     im = Image.new("RGB", [imw, imh], 255)
+
+    label_factor = dim // COORD_PIXEL_SIZE
+
+    for x in range(COORD_PIXEL_SIZE):
+        for y in range(COORD_PIXEL_SIZE):
+            im.putpixel((x, y), (233, 233, 233))
+
+    for sx in range(1, event.canvas_width + 1):
+        pix = (sx - 1) % 10
+        pix_code = COORD_PIXELS[pix].split(":")
+
+        for x in range(COORD_PIXEL_SIZE):
+            for y in range(COORD_PIXEL_SIZE):
+                for dx in range(label_factor):
+                    for dy in range(label_factor):
+
+                        col = 225 - (pix * 8)
+                        
+                        im.putpixel(((sx * COORD_PIXEL_SIZE) + (x * label_factor) + dx, (y * label_factor) + dy),
+                                    (0, 0, 0) if pix_code[y][x] == "x" else (col, col, col))
+
+    for sy in range(1, event.canvas_height + 1):
+        pix = (sy - 1) % 10
+        pix_code = COORD_PIXELS[pix].split(":")
+
+        for x in range(COORD_PIXEL_SIZE):
+            for y in range(COORD_PIXEL_SIZE):
+                for dx in range(label_factor):
+                    for dy in range(label_factor):
+
+                        col = 225 - (pix * 8)
+                        
+                        im.putpixel(((x * label_factor) + dx, (sy * COORD_PIXEL_SIZE) + (y * label_factor) + dy),
+                                    (0, 0, 0) if pix_code[y][x] == "x" else (col, col, col))
+
     
     pixels = event.pixels.all()
+    pixel_factor = dim // event.big_pixel_factor
 
     for pixel in pixels:
-        im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
+        for dx in range(pixel_factor):
+            for dy in range(pixel_factor):
+                im.putpixel(((pixel.canv_x + event.big_pixel_factor) * pixel_factor + dx,
+                             (pixel.canv_y + event.big_pixel_factor) * pixel_factor + dy),
+                            pixel.color.get_RGB())
 
     im.save(f'temp/event-{event.slug}.png', 'PNG')
     CURRENT_IMAGE[event.slug] = im
