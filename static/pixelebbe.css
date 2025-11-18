@@ -26,6 +26,10 @@ img {
     margin: 1em 0;
 }
 
+img.logo {
+    margin: 0;
+}
+
 img.ebbe {
     width: 100%;
     max-width: 600px;
