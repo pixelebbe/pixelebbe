@@ -157,6 +157,7 @@ def import_image(event, image_file, canv_grid=True):
 
     db.session.commit()
 
+
 def closest_color_to(color_list, match_color):
     closest_color = None
     color_dist = None
@@ -170,7 +171,35 @@ def closest_color_to(color_list, match_color):
     
     return closest_color
 
+
 def color_distance(color1, color2):
-    r, g, b, *_ = color2
-    cr, cg, cb, *_ = color1
-    return math.sqrt((r - cr)**2 + (g - cg)**2 + (b - cb)**2)
+    r1, g1, b1, *_ = color2
+    r2, g2, b2, *_ = color1
+
+    x1, y1, z1 = rgb2xyz(r1, g1, b1)
+    x2, y2, z2 = rgb2xyz(r2, g2, b2)
+    return math.sqrt((x1 - x2)**2 + (y1 - y2)**2 + (z1 - z2)**2)
+
+
+def rgb2xyz(r, g, b):
+    r = rgb2xyz_helper(r)
+    g = rgb2xyz_helper(g)
+    b = rgb2xyz_helper(b)
+
+    x = (r * 0.4124564) + (g * 0.3575761) + (b * 0.1804375)
+    y = (r * 0.2126729) + (g * 0.7151522) + (b * 0.0721750)
+    z = (r * 0.0193339) + (g * 0.1191920) + (b * 0.9503041)
+
+    return (x, y, z)
+
+def rgb2xyz_helper(comp):
+    comp = comp / 255
+
+    if comp > 0.04045:
+        comp = pow(((comp + 0.055) / 1.055), 2.4)
+    else:
+        comp = comp / 12.92
+
+    comp = comp * 100
+    
+    return comp
