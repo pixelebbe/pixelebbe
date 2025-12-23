@@ -61,9 +61,17 @@ def make_image(event, pixels=None):
 
 def amend_image(event, pixels):
     im = CURRENT_IMAGE[event.slug]
-    for pixel in pixels:
-        im.putpixel((pixel.canv_x, pixel.canv_y), pixel.color.get_RGB())
 
+    dim = math.lcm(event.big_pixel_factor, COORD_PIXEL_SIZE)    
+    pixel_factor = dim // event.big_pixel_factor
+
+    for pixel in pixels:
+        color = pixel.color.get_RGB()
+        for dx in range(pixel_factor):
+            for dy in range(pixel_factor):
+                im.putpixel(((pixel.canv_x + event.big_pixel_factor) * pixel_factor + dx,
+                             (pixel.canv_y + event.big_pixel_factor) * pixel_factor + dy),
+                            color)
 
 def redraw_image(event):
     dim = math.lcm(event.big_pixel_factor, COORD_PIXEL_SIZE)
