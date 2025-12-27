@@ -1,0 +1,11 @@
+<li>
+    <p>please join us at our assembly</p>
+
+    <ul>
+        {% for assembly in items %}
+            <li>
+                <strong>{{ assembly.name }}</strong>, which you can find here: {{ assembly.location }}
+            </li>
+        {% endfor %}
+    </ul>
+</li>

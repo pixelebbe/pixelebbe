@@ -63,7 +63,8 @@ with app.app_context():
         { "title": "phone call (manual)", "file_name": "phone_manual", "default_options": '{"number": "...", "mnemonic": "..."}' },
         { "title": "via chaospost", "file_name": "chaospost", "default_options": '{"address_field": "..."}' },
         { "title": "via fax", "file_name": "fax", "default_options": '{"fax_no": "...", "mnemonic": "...", "template_url": "..."}' },
-        { "title": "phone call (phonetree)", "file_name": "phone_tree", "default_options": '{"number": "...", "mnemonic": "..."}' }
+        { "title": "phone call (phonetree)", "file_name": "phone_tree", "default_options": '{"number": "...", "mnemonic": "..."}' },
+        { "title": "assembly", "file_name": "assembly", "default_options": '{"name": "...", "location": "..."}' }
         ]:
         db.session.add(SubmitMethod(title=sm['title'], file_name=sm['file_name'],
                                     default_options=sm['default_options'], active=True))
